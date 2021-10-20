@@ -34,7 +34,7 @@ export class GatewayService {
       .request({
         url: `${url}/${endpoint}`,
         method: method,
-        headers: headersDto,
+        headers: headers ? headersDto : null,
         data: body,
         params: params,
       })
@@ -47,6 +47,7 @@ export class GatewayService {
           );
         } else {
           //TODO check if 503 is correct, lifecheck the service
+          console.log(result);
           throw new ServiceUnavailable(
             `Cannot ${method} /${endpoint}, Service unavailable`,
           );
