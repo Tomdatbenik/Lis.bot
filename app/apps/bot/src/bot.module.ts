@@ -13,7 +13,7 @@ import { BotService } from './bot.service';
 @Module({
   imports: [
     DiscordModule.forRoot({
-      token: 'ODg2ODkwODk2OTI1MjkwNDk2.YT8Lgw.4JJYyisPaF47856gSZCRqE3ha_s',
+      token: process.env.BOT_TOKEN,
       commandPrefix: '!',
       // allowGuilds: ['745366351929016363'],
       // denyGuilds: [''],
