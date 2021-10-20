@@ -11,12 +11,14 @@ describe('WeatherServiceController', () => {
       providers: [WeatherServiceService],
     }).compile();
 
-    weatherServiceController = app.get<WeatherServiceController>(WeatherServiceController);
+    weatherServiceController = app.get<WeatherServiceController>(
+      WeatherServiceController,
+    );
   });
 
-  describe('root', () => {
-    it('should return "Hello World!"', () => {
-      expect(weatherServiceController.getHello()).toBe('Hello World!');
-    });
-  });
+  // describe('root', () => {
+  //   it('should return "Hello World!"', () => {
+  //     expect(weatherServiceController.getHello()).toBe('Hello World!');
+  //   });
+  // });
 });

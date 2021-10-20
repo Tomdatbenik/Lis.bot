@@ -7,6 +7,6 @@ export class BotController {
 
   @Get()
   getHello(): string {
-    return this.botService.getHello();
+    return "hoi";
   }
 }

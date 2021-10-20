@@ -8,7 +8,7 @@ import {
 import { AxiosResponse, Method } from 'axios';
 import { Observable } from 'rxjs';
 import { RequiredHeaders } from './entities/headers.entity';
-import ServiceUnavailable from './exeptions/serviceUnavailable.exception';
+import ServiceUnavailable from '../../common/exeptions/serviceUnavailable.exception';
 
 @Injectable()
 export class GatewayService {
@@ -24,7 +24,11 @@ export class GatewayService {
     params: any,
     body: any,
   ): Promise<Observable<AxiosResponse<any>>> {
-    this.logger.log(`calling to: ${url}/${endpoint}`);
+    if (endpoint != '') {
+      this.logger.log(`calling to: ${url}/${endpoint}`);
+    } else {
+      this.logger.log(`calling to: ${url}`);
+    }
 
     const httpService: HttpService = new HttpService();
 
@@ -32,7 +36,7 @@ export class GatewayService {
 
     const response = await httpService
       .request({
-        url: `${url}/${endpoint}`,
+        url: endpoint != '' ? `${url}/${endpoint}` : url,
         method: method,
         headers: headers ? headersDto : null,
         data: body,

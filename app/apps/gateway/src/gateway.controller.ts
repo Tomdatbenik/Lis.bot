@@ -11,7 +11,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { RouteList } from './entities/route.entity';
-import NotFound from './exeptions/notFound.exception';
+import NotFound from '../../common/exeptions/notFound.exception';
 import { GatewayService } from './gateway.service';
 
 @Controller()
@@ -37,7 +37,7 @@ export class GatewayController {
       throw new NotFound();
     }
 
-    const endpoint = params[0].replace(`${service}/`, '');
+    const endpoint = params[0].replace(`${service}/`, '').replace(service, '');
 
     const result = await this.gatewayService.call(
       request.method,
