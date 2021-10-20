@@ -1,0 +1,57 @@
+{
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "apps/app/src",
+  "monorepo": true,
+  "root": "apps/app",
+  "compilerOptions": {
+    "webpack": true,
+    "tsConfigPath": "apps/app/tsconfig.app.json"
+  },
+  "projects": {
+    "app": {
+      "type": "application",
+      "root": "apps/app",
+      "entryFile": "main",
+      "sourceRoot": "apps/app/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/app/tsconfig.app.json"
+      }
+    },
+    "message-handler": {
+      "type": "application",
+      "root": "apps/message-handler",
+      "entryFile": "main",
+      "sourceRoot": "apps/message-handler/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/message-handler/tsconfig.app.json"
+      }
+    },
+    "user-service": {
+      "type": "application",
+      "root": "apps/user-service",
+      "entryFile": "main",
+      "sourceRoot": "apps/user-service/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/user-service/tsconfig.app.json"
+      }
+    },
+    "weather-service": {
+      "type": "application",
+      "root": "apps/weather-service",
+      "entryFile": "main",
+      "sourceRoot": "apps/weather-service/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/weather-service/tsconfig.app.json"
+      }
+    },
+    "gateway": {
+      "type": "application",
+      "root": "apps/gateway",
+      "entryFile": "main",
+      "sourceRoot": "apps/gateway/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/gateway/tsconfig.app.json"
+      }
+    }
+  }
+}
