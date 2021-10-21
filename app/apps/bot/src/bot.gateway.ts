@@ -53,8 +53,19 @@ export class BotGateway {
     console.log(test);
   }
 
+  //#region Weather
   @OnCommand({ name: 'weather' })
-  async onWeatherCommand(
+  async onWeatherCommandEnglish(
+    @Content() content: weatherInputDto,
+    @Context() [context]: [Message],
+  ): Promise<void> {
+    await context.reply(
+      await this.botservice.getTodaysWeather(content.location),
+    );
+  }
+
+  @OnCommand({ name: 'weer' })
+  async onWeatherCommandDutch(
     @Content() content: weatherInputDto,
     @Context() [context]: [Message],
   ): Promise<void> {
@@ -67,6 +78,7 @@ export class BotGateway {
   async onForecastCommand(message: Message): Promise<void> {
     await message.reply(`Should get the forecast :3: ${message.content}`);
   }
+  //#endregion
 
   @OnCommand({ name: 'friday?' })
   async onFridayCommand(message: Message): Promise<void> {
