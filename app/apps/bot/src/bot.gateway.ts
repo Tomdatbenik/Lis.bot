@@ -31,6 +31,7 @@ export class BotGateway {
     );
   }
 
+  //#region simple stuff
   @OnCommand({ name: 'avatar' })
   @UsePipes(TransformPipe)
   async onCommand(
@@ -39,7 +40,9 @@ export class BotGateway {
   ): Promise<void> {
     await context.reply(this.botservice.getAvatar(content));
   }
+  //#endregion
 
+  //#region test
   @OnCommand({ name: 'test' })
   async onTestCommand(message: Message): Promise<void> {
     await message.reply(`Execute command: ${message.content}`);
@@ -52,6 +55,7 @@ export class BotGateway {
     const test = await this.botservice.getHello(message.content);
     console.log(test);
   }
+  //#endregion
 
   //#region Weather
   @OnCommand({ name: 'weather' })
@@ -64,7 +68,7 @@ export class BotGateway {
     );
   }
 
-  @OnCommand({ name: 'weer', prefix: ""})
+  @OnCommand({ name: 'weer', prefix: '' })
   async onWeatherCommandDutch(
     @Content() content: weatherInputDto,
     @Context() [context]: [Message],
@@ -74,7 +78,7 @@ export class BotGateway {
     );
   }
 
-  @OnCommand({ name: 'w', prefix: ""})
+  @OnCommand({ name: 'w', prefix: '' })
   async onWeatherCommandShort(
     @Content() content: weatherInputDto,
     @Context() [context]: [Message],
@@ -90,6 +94,7 @@ export class BotGateway {
   }
   //#endregion
 
+  //#region Day
   @OnCommand({ name: 'friday?' })
   async onFridayCommand(message: Message): Promise<void> {
     await message.reply(
@@ -103,4 +108,5 @@ export class BotGateway {
       `What is today are we today is u today? :3: ${message.content}`,
     );
   }
+  //#endregion
 }
