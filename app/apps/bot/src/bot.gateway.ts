@@ -64,8 +64,18 @@ export class BotGateway {
     );
   }
 
-  @OnCommand({ name: 'weer' })
+  @OnCommand({ name: 'weer', prefix: ""})
   async onWeatherCommandDutch(
+    @Content() content: weatherInputDto,
+    @Context() [context]: [Message],
+  ): Promise<void> {
+    await context.reply(
+      await this.botservice.getTodaysWeather(content.location),
+    );
+  }
+
+  @OnCommand({ name: 'w', prefix: ""})
+  async onWeatherCommandShort(
     @Content() content: weatherInputDto,
     @Context() [context]: [Message],
   ): Promise<void> {
