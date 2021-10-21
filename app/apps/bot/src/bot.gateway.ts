@@ -14,6 +14,7 @@ import {
 import { Message, TextChannel } from 'discord.js';
 import { BotService } from './bot.service';
 import { UserDto } from './dto/user.dto';
+import { weatherInputDto } from './dto/weatherInput.dto';
 
 @Injectable()
 export class BotGateway {
@@ -36,15 +37,7 @@ export class BotGateway {
     @Content() content: UserDto,
     @Context() [context]: [Message],
   ): Promise<void> {
-    if (content.user) {
-      if (content.user.avatarURL() != null) {
-        await context.reply(`User avatar: ${content.user.avatarURL()}`);
-      } else {
-        await context.reply(`${content.user.username} UPLOAD A PICTURE!! AAA`);
-      }
-    } else {
-      await context.reply(`I need a @user.`);
-    }
+    await context.reply(this.botservice.getAvatar(content));
   }
 
   @OnCommand({ name: 'test' })
@@ -61,8 +54,13 @@ export class BotGateway {
   }
 
   @OnCommand({ name: 'weather' })
-  async onWeatherCommand(message: Message): Promise<void> {
-    await message.reply(`Should get the weather :3: ${message.content}`);
+  async onWeatherCommand(
+    @Content() content: weatherInputDto,
+    @Context() [context]: [Message],
+  ): Promise<void> {
+    await context.reply(
+      await this.botservice.getTodaysWeather(content.location),
+    );
   }
 
   @OnCommand({ name: 'forecast' })

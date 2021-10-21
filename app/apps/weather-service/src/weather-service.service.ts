@@ -17,9 +17,12 @@ export class WeatherServiceService {
         }
         resolve(result);
       });
-    }).then((result) => {
-      console.log(result);
-      return result;
-    });
+    })
+      .then((result) => {
+        return result[0];
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }
 }
