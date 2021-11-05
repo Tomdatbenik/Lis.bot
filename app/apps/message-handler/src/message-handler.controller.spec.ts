@@ -16,7 +16,7 @@ describe('MessageHandlerController', () => {
 
   describe('root', () => {
     it('should return "Hello World!"', () => {
-      expect(messageHandlerController.getHello()).toBe('Hello World!');
+      expect(messageHandlerController.getHello("")).toBe('Hello World!');
     });
   });
 });

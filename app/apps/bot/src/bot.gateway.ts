@@ -63,6 +63,16 @@ export class BotGateway {
     @Content() content: weatherInputDto,
     @Context() [context]: [Message],
   ): Promise<void> {
+    const savedMessage = await this.botservice.saveMessage(
+      context.content,
+      context.author.id,
+      context.author.username,
+    );
+
+    if (savedMessage) {
+      this.logger.log(`Saved message.`);
+    }
+
     await context.reply(
       await this.botservice.getTodaysWeather(content.location),
     );

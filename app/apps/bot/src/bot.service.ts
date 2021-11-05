@@ -1,5 +1,6 @@
 import { HttpException, HttpService, Injectable, Logger } from '@nestjs/common';
 import { weatherDTO } from 'apps/common/dto/weather.dto';
+import DiscordMessage from 'apps/common/models/message.entity';
 import { UserDto } from './dto/user.dto';
 
 @Injectable()
@@ -28,6 +29,35 @@ export class BotService {
         this.logger.error(result);
       });
     return 'Hello World!';
+  }
+
+  async saveMessage(
+    message: string,
+    authorId: string,
+    authorName: string,
+  ): Promise<DiscordMessage> {
+    const discordMessage: DiscordMessage = await this.httpService
+      .request({
+        url: `http://localhost:8079/message-handler/`,
+        method: 'post',
+        data: new DiscordMessage(message, authorId, authorName),
+      })
+      .toPromise()
+      .then((result) => {
+        return result.data as DiscordMessage;
+      })
+      .catch((err) => {
+        console.log(err);
+        return new DiscordMessage('');
+      });
+
+    if (discordMessage.message) {
+      this.logger.log(`Message saved: ${discordMessage.message}`);
+    } else {
+      this.logger.error(`Could not save message: ${message}`);
+    }
+
+    return discordMessage;
   }
 
   getAvatar(content: UserDto): string {
