@@ -8,6 +8,7 @@ import {
 import { Intents } from 'discord.js';
 import { BotController } from './bot.controller';
 import { BotGateway } from './bot.gateway';
+import { BotMiddleware } from './bot.middleware';
 import { BotService } from './bot.service';
 
 @Module({
@@ -40,6 +41,6 @@ import { BotService } from './bot.service';
     } as DiscordModuleOption),
   ],
   controllers: [BotController],
-  providers: [BotService, BotGateway],
+  providers: [BotService, BotGateway, BotMiddleware],
 })
 export class BotModule {}

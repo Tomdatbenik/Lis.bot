@@ -63,7 +63,7 @@ export class BotGateway {
     @Content() content: weatherInputDto,
     @Context() [context]: [Message],
   ): Promise<void> {
-    await this.botservice.saveMessage(content);
+    await this.botservice.saveMessage(context);
 
     await context.reply(
       await this.botservice.getTodaysWeather(content.location),
@@ -75,7 +75,7 @@ export class BotGateway {
     @Content() content: weatherInputDto,
     @Context() [context]: [Message],
   ): Promise<void> {
-    await this.botservice.saveMessage(content);
+    await this.botservice.saveMessage(context);
 
     await context.reply(
       await this.botservice.getTodaysWeather(content.location),
@@ -87,7 +87,7 @@ export class BotGateway {
     @Content() content: weatherInputDto,
     @Context() [context]: [Message],
   ): Promise<void> {
-    await this.botservice.saveMessage(content);
+    await this.botservice.saveMessage(context);
 
     await context.reply(
       await this.botservice.getTodaysWeather(content.location),
@@ -99,7 +99,7 @@ export class BotGateway {
     @Content() content: weatherInputDto,
     @Context() [context]: [Message],
   ): Promise<void> {
-    await this.botservice.saveMessage(content);
+    await this.botservice.saveMessage(context);
 
     await context.reply(
       await this.botservice.getTodaysWeather(content.location),
@@ -122,4 +122,11 @@ export class BotGateway {
     );
   }
   //#endregion
+
+  @On({ event: 'message' })
+  async onMessage(@Context() [context]: [Message]): Promise<void> {
+    if (context.mentions.users.get('886890896925290496')) {
+      this.botservice.saveMessage(context);
+    }
+  }
 }

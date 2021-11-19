@@ -3,6 +3,8 @@ import { MessageHandlerController } from './message-handler.controller';
 import { MessageHandlerService } from './message-handler.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import DiscordMessage from 'apps/common/models/message.entity';
+import { WordService } from './wordt.service';
+import Word from 'apps/common/models/word-entity';
 
 @Module({
   imports: [
@@ -16,9 +18,9 @@ import DiscordMessage from 'apps/common/models/message.entity';
       entities: [DiscordMessage],
       synchronize: true,
     }),
-    TypeOrmModule.forFeature([DiscordMessage]),
+    TypeOrmModule.forFeature([DiscordMessage, Word]),
   ],
   controllers: [MessageHandlerController],
-  providers: [MessageHandlerService],
+  providers: [MessageHandlerService, WordService],
 })
 export class MessageHandlerModule {}
