@@ -21,7 +21,7 @@ export class WordService {
         this.logger.log(`Found ${word.word}`);
         word.used += 1;
         this.repository.save(word);
-        this.logger.log(`updated ${word}`);
+        this.logger.log(`updated ${word.word}`);
       } else {
         await this.repository.save(word);
         this.logger.log(`Saved ${word.word}`);
