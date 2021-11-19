@@ -9,13 +9,15 @@ export class WordService {
   private readonly logger = new Logger(WordService.name);
 
   constructor(
-    @InjectRepository(DiscordMessage)
+    @InjectRepository(Word)
     private repository: Repository<Word>,
   ) {}
 
   async saveWords(message: DiscordMessage): Promise<void> {
-    message.message.split(' ').forEach(async (w) => {
-      const word = await this.findWord(w)[0];
+    const words = message.message.split(' ');
+
+    words.forEach(async (w) => {
+      const word: Word = await this.findWord(w);
 
       if (word) {
         this.logger.log(`Found ${word.word}`);
@@ -23,13 +25,17 @@ export class WordService {
         this.repository.save(word);
         this.logger.log(`updated ${word.word}`);
       } else {
-        await this.repository.save(word);
-        this.logger.log(`Saved ${word.word}`);
+        const newWord = new Word(w, message.authorId);
+        await this.repository.save(newWord);
+        this.logger.log(`Saved ${newWord.word}`);
       }
     });
   }
 
-  async findWord(word: string): Promise<Word[]> {
-    return await this.repository.find({ where: { word: word.toLowerCase() } });
+  async findWord(word: string): Promise<Word> {
+    return await this.repository
+      .createQueryBuilder('word')
+      .where('word.word = :word', { word: `${word}` })
+      .getOne();
   }
 }

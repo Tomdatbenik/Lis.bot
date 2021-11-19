@@ -7,7 +7,6 @@ export class BotMiddleware implements DiscordMiddleware {
   private readonly logger = new Logger(BotMiddleware.name);
 
   use(event: keyof ClientEvents, context: any[]): void {
-    console.log(event);
-    this.logger.log(context);
+    this.logger.log(`${event} + ${context}`);
   }
 }

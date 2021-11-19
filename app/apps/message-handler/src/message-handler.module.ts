@@ -15,7 +15,7 @@ import Word from 'apps/common/models/word-entity';
       username: process.env.MESSAGE_DB_USERNAME,
       password: process.env.MESSAGE_DB_PASSWORD,
       database: process.env.MESSAGE_DB_DATABASE,
-      entities: [DiscordMessage],
+      entities: [DiscordMessage, Word],
       synchronize: true,
     }),
     TypeOrmModule.forFeature([DiscordMessage, Word]),

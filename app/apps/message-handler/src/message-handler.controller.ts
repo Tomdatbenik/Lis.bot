@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Logger, Param, Post } from '@nestjs/common';
 import DiscordMessage from 'apps/common/models/message.entity';
 import { MessageHandlerService } from './message-handler.service';
-import { WordService } from './prepare-message.service';
+import { WordService } from './wordt.service';
 
 @Controller()
 export class MessageHandlerController {
@@ -24,6 +24,8 @@ export class MessageHandlerController {
     Logger.log(
       `${discordMessage.message} by ${discordMessage.authorName}: has been received`,
     );
+
+    await this.wordService.saveWords(discordMessage);
 
     return await this.messageHandlerService.saveMessage(discordMessage);
   }
