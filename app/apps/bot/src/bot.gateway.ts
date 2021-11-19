@@ -126,6 +126,9 @@ export class BotGateway {
   @On({ event: 'message' })
   async onMessage(@Context() [context]: [Message]): Promise<void> {
     if (context.mentions.users.get('886890896925290496')) {
+      if (context.content.length > 255) {
+        await context.reply("Me be baka, I can't handle this! (─‿‿─)");
+      }
       this.botservice.saveMessage(context);
     }
   }

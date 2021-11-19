@@ -2,9 +2,9 @@ import { Module } from '@nestjs/common';
 import { MessageHandlerController } from './message-handler.controller';
 import { MessageHandlerService } from './message-handler.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import DiscordMessage from 'apps/common/models/message.entity';
+import DiscordMessage from 'apps/common/entities/message.entity';
 import { WordService } from './wordt.service';
-import Word from 'apps/common/models/word-entity';
+import Word from 'apps/common/entities/word-entity';
 
 @Module({
   imports: [

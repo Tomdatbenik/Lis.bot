@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Logger, Param, Post } from '@nestjs/common';
-import DiscordMessage from 'apps/common/models/message.entity';
+import DiscordMessage from 'apps/common/entities/message.entity';
 import { MessageHandlerService } from './message-handler.service';
 import { WordService } from './wordt.service';
 

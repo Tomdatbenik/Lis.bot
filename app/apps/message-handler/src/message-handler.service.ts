@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import DiscordMessage from 'apps/common/models/message.entity';
+import DiscordMessage from 'apps/common/entities/message.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, SelectQueryBuilder } from 'typeorm';
 

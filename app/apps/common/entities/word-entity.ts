@@ -6,13 +6,21 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import ContextType from '../enums/Context.enum';
 
 @Entity()
 export default class Word {
-  constructor(word?: string, authorId?: string, used?: number) {
+  constructor(
+    word?: string,
+    context?: ContextType,
+    topic?: string,
+    used?: number,
+  ) {
     this.uuid = randomUUID();
     this.word = word ? word : '';
     this.used = used ? used : 0;
+    this.context = context ? context : ContextType.random;
+    this.topic = topic ? topic : '';
     this.received = new Date();
     this.updated = new Date();
   }
@@ -25,6 +33,12 @@ export default class Word {
 
   @Column()
   used?: number;
+
+  @Column({ type: 'enum', enum: ContextType, default: ContextType.random })
+  context!: ContextType;
+
+  @Column()
+  topic?: string;
 
   @CreateDateColumn()
   received?: Date;

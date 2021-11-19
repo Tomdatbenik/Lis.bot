@@ -1,6 +1,6 @@
 import { HttpException, HttpService, Injectable, Logger } from '@nestjs/common';
 import { weatherDTO } from 'apps/common/dto/weather.dto';
-import DiscordMessage from 'apps/common/models/message.entity';
+import DiscordMessage from 'apps/common/entities/message.entity';
 import { UserDto } from './dto/user.dto';
 
 @Injectable()
