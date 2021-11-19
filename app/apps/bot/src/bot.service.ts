@@ -31,31 +31,26 @@ export class BotService {
     return 'Hello World!';
   }
 
-  async saveMessage(
-    message: string,
-    authorId: string,
-    authorName: string,
-  ): Promise<DiscordMessage> {
+  async saveMessage(context: any): Promise<DiscordMessage> {
     const discordMessage: DiscordMessage = await this.httpService
       .request({
         url: `http://localhost:8079/message-handler/`,
         method: 'post',
-        data: new DiscordMessage(message, authorId, authorName),
+        data: new DiscordMessage(
+          context.content,
+          context.author.id,
+          context.author.username,
+        ),
       })
       .toPromise()
       .then((result) => {
         return result.data as DiscordMessage;
       })
       .catch((err) => {
-        console.log(err);
+        this.logger.error(`Could not save message: ${err}`);
+
         return new DiscordMessage('');
       });
-
-    if (discordMessage.message) {
-      this.logger.log(`Message saved: ${discordMessage.message}`);
-    } else {
-      this.logger.error(`Could not save message: ${message}`);
-    }
 
     return discordMessage;
   }

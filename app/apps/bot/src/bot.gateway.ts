@@ -63,15 +63,7 @@ export class BotGateway {
     @Content() content: weatherInputDto,
     @Context() [context]: [Message],
   ): Promise<void> {
-    const savedMessage = await this.botservice.saveMessage(
-      context.content,
-      context.author.id,
-      context.author.username,
-    );
-
-    if (savedMessage) {
-      this.logger.log(`Saved message.`);
-    }
+    await this.botservice.saveMessage(content);
 
     await context.reply(
       await this.botservice.getTodaysWeather(content.location),
@@ -83,6 +75,8 @@ export class BotGateway {
     @Content() content: weatherInputDto,
     @Context() [context]: [Message],
   ): Promise<void> {
+    await this.botservice.saveMessage(content);
+
     await context.reply(
       await this.botservice.getTodaysWeather(content.location),
     );
@@ -93,14 +87,23 @@ export class BotGateway {
     @Content() content: weatherInputDto,
     @Context() [context]: [Message],
   ): Promise<void> {
+    await this.botservice.saveMessage(content);
+
     await context.reply(
       await this.botservice.getTodaysWeather(content.location),
     );
   }
 
   @OnCommand({ name: 'forecast' })
-  async onForecastCommand(message: Message): Promise<void> {
-    await message.reply(`Should get the forecast :3: ${message.content}`);
+  async onForecastCommand(
+    @Content() content: weatherInputDto,
+    @Context() [context]: [Message],
+  ): Promise<void> {
+    await this.botservice.saveMessage(content);
+
+    await context.reply(
+      await this.botservice.getTodaysWeather(content.location),
+    );
   }
   //#endregion
 
