@@ -17,6 +17,8 @@ export class WordService {
     const words = message.message.split(' ');
 
     words.forEach(async (w) => {
+      w = w.replace('?', '').replace('.', '').replace(',', '');
+      
       const word: Word = await this.findWord(w);
 
       if (word) {

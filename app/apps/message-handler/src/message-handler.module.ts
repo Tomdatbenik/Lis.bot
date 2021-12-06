@@ -5,6 +5,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import DiscordMessage from 'apps/common/entities/message.entity';
 import { WordService } from './wordt.service';
 import Word from 'apps/common/entities/word-entity';
+import Intend from 'apps/common/entities/Intend.entity';
+import AiData from 'apps/common/entities/aiData.entity';
 
 @Module({
   imports: [
@@ -15,10 +17,10 @@ import Word from 'apps/common/entities/word-entity';
       username: process.env.MESSAGE_DB_USERNAME,
       password: process.env.MESSAGE_DB_PASSWORD,
       database: process.env.MESSAGE_DB_DATABASE,
-      entities: [DiscordMessage, Word],
+      entities: [DiscordMessage, Word, Intend, AiData],
       synchronize: true,
     }),
-    TypeOrmModule.forFeature([DiscordMessage, Word]),
+    TypeOrmModule.forFeature([DiscordMessage, Word, Intend, AiData]),
   ],
   controllers: [MessageHandlerController],
   providers: [MessageHandlerService, WordService],
