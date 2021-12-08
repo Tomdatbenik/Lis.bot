@@ -1,20 +1,23 @@
+from words import prepareWords
+from keras.models import load_model
+import numpy as np
+from tensorflow.keras.optimizers import SGD
+from keras.models import Sequential
+from keras.layers import Dense, Dropout
+import random
+import pickle
+import json
 from nltk.stem import WordNetLemmatizer
 import nltk
 nltk.download('punkt')
 nltk.download('wordnet')
 lemmatizer = WordNetLemmatizer()
-import json
-import pickle
-import random
-from keras.layers import Dense, Dropout
-from keras.models import Sequential
-from tensorflow.keras.optimizers import SGD
-import numpy as np
+
 
 def clean_up_sentence(sentence):
     sentence_words = nltk.word_tokenize(sentence)
     sentence_words = [lemmatizer.lemmatize(
-        word.lower()) for word in sentence_words]
+        word) for word in sentence_words]
     return sentence_words
 
 # return bag of words array: 0 or 1 for each word in the bag that exists in the sentence
@@ -32,33 +35,22 @@ def bow(sentence, words, show_details=True):
                 bag[i] = 1
                 if show_details:
                     print("found in bag: %s" % w)
+    print("Bag ====")
+    print(bag)
     return(np.array(bag))
 
 
-def predict_class(sentence, model):
-    # take each word and tokenize it
-    words = []
-    w = nltk.word_tokenize(sentence)
-    words.extend(w)
-
-    print(words)
-
+def predict_class(sentence, model, words, classes):
     # filter out predictions below a threshold
     p = bow(sentence, words, show_details=False)
-    print(p)
-    print(np.array([p]))
-    # res = model.predict(np.array([p]))[0]
-
-    # print("result ==============================================")
-    # print(res)
-
-    # ERROR_THRESHOLD = 0.25
-    # results = [[i, r] for i, r in enumerate(res) if r > ERROR_THRESHOLD]
-    # # sort by strength of probability
-    # results.sort(key=lambda x: x[1], reverse=True)
+    res = model.predict(np.array([p]))[0]
+    ERROR_THRESHOLD = 0.25
+    results = [[i, r] for i, r in enumerate(res) if r > ERROR_THRESHOLD]
+    # sort by strength of probability
+    results.sort(key=lambda x: x[1], reverse=True)
     return_list = []
-    # for r in results:
-    #     return_list.append({"intent": classes[r[0]], "probability": str(r[1])})
+    for r in results:
+        return_list.append({"intent": classes[r[0]], "probability": str(r[1])})
     return return_list
 
 
@@ -67,6 +59,27 @@ def getResponse(ints, intents_json):
     list_of_intents = intents_json['intents']
     for i in list_of_intents:
         if(i['tag'] == tag):
-            result = "no clue"
+            result = random.choice(i['responses'])
             break
     return result
+
+
+def predict(msg, data, model=None):
+    words = []
+    classes = []
+    documents = []
+    ignore_words = ['?', '!']
+    intents = json.loads(data)
+
+    prepareWords(words, intents, ignore_words, classes, documents)
+
+    if model is None:
+        model = load_model('chatbot_model.h5')
+
+    print(words)
+    print(classes)
+
+    ints = predict_class(msg, model, words, classes)
+    print("ints = ")
+    print(ints)
+    return getResponse(ints, intents)

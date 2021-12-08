@@ -1,4 +1,6 @@
+from numpy import chararray
 from createModel import createModel
+from predict import predict
 from flask import Flask, request
 from os import getenv
 import json
@@ -13,16 +15,13 @@ def create() -> json:
     return {}
 
 
-@app.route("/chat", methods=["GET"])
-def chat() -> json:
+@app.route("/chat", methods=["POST"])
+def chat() -> chararray:
     msg = request.args.get('msg')
     print(msg)
-    model = load_model('chatbot_model.h5')
-    print(model)
-    ints = predict_class(msg, model)
-    print(ints)
+    print(msg)
 
-    return {ints}
+    return predict(msg,request.data)
 
 
 if __name__ == "__main__":

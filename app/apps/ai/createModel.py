@@ -1,39 +1,26 @@
+from words import prepareWords
+import numpy as np
+from tensorflow.keras.optimizers import SGD
+from keras.models import Sequential
+from keras.layers import Dense, Dropout
+import random
+import pickle
+import json
 from nltk.stem import WordNetLemmatizer
 import nltk
 nltk.download('punkt')
 nltk.download('wordnet')
 lemmatizer = WordNetLemmatizer()
-import json
-import pickle
-import random
-from keras.layers import Dense, Dropout
-from keras.models import Sequential
-from tensorflow.keras.optimizers import SGD
-import numpy as np
 
-def createModel(data) -> bool:
+
+def createModel(data):
     words = []
     classes = []
     documents = []
     ignore_words = ['?', '!']
     intents = json.loads(data)
 
-    for intent in intents['intents']:
-            for pattern in intent['patterns']:
-
-                # take each word and tokenize it
-                w = nltk.word_tokenize(pattern)
-                words.extend(w)
-                # adding documents
-                documents.append((w, intent['tag']))
-
-                # adding classes to our class list
-                if intent['tag'] not in classes:
-                    classes.append(intent['tag'])
-
-    words = [lemmatizer.lemmatize(w.lower())
-            for w in words if w not in ignore_words]
-    words = sorted(list(set(words)))
+    prepareWords(words, intents, ignore_words, classes, documents)
 
     classes = sorted(list(set(classes)))
 
@@ -86,12 +73,12 @@ def createModel(data) -> bool:
     # Compile model. Stochastic gradient descent with Nesterov accelerated gradient gives good results for this model
     sgd = SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
     model.compile(loss='categorical_crossentropy',
-                optimizer=sgd, metrics=['accuracy'])
+                  optimizer=sgd, metrics=['accuracy'])
 
     # fitting and saving the model
     hist = model.fit(np.array(train_x), np.array(train_y),
-                    epochs=200, batch_size=5, verbose=1)
+                     epochs=200, batch_size=5, verbose=1)
     model.save('chatbot_model.h5', hist)
 
     print("model created")
-    return True
+    return model
