@@ -61,6 +61,15 @@
       "compilerOptions": {
         "tsConfigPath": "apps/bot/tsconfig.app.json"
       }
+    },
+    "channel": {
+      "type": "application",
+      "root": "apps/channel",
+      "entryFile": "main",
+      "sourceRoot": "apps/channel/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/channel/tsconfig.app.json"
+      }
     }
   }
 }

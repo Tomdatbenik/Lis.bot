@@ -1,33 +1,29 @@
-import nltk
-nltk.download('punkt')
-nltk.download('wordnet')
-from nltk.stem import WordNetLemmatizer
-lemmatizer = WordNetLemmatizer()
+from createModel import createModel
+from flask import Flask, request
+from os import getenv
 import json
-import pickle
-
-import numpy as np
-from keras.models import Sequential
-from keras.layers import Dense, Activation, Dropout
-from keras.optimizers import SGD
-import random
-
-import json
-with open('intents.json') as file:
-    data = json.load(file)
 
 
-words = []
-labels = []
-docs_x = []
-docs_y = []
+app = Flask(__name__)
 
-for intent in data['intents']:
-    for pattern in intent['patterns']:
-        wrds = nltk.word_tokenize(pattern)
-        words.extend(wrds)
-        docs_x.append(wrds)
-        docs_y.append(intent["tag"])
-        
-    if intent['tag'] not in labels:
-        labels.append(intent['tag'])
+
+@app.route("/create", methods=["POST"])
+def create() -> json:
+    createModel(request.data)
+    return {}
+
+
+@app.route("/chat", methods=["GET"])
+def chat() -> json:
+    msg = request.args.get('msg')
+    print(msg)
+    model = load_model('chatbot_model.h5')
+    print(model)
+    ints = predict_class(msg, model)
+    print(ints)
+
+    return {ints}
+
+
+if __name__ == "__main__":
+    app.run(debug=True, host="0.0.0.0", port=5000)
