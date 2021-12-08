@@ -17,7 +17,7 @@ lemmatizer = WordNetLemmatizer()
 def clean_up_sentence(sentence):
     sentence_words = nltk.word_tokenize(sentence)
     sentence_words = [lemmatizer.lemmatize(
-        word) for word in sentence_words]
+        word.lower()) for word in sentence_words]
     return sentence_words
 
 # return bag of words array: 0 or 1 for each word in the bag that exists in the sentence
@@ -35,15 +35,15 @@ def bow(sentence, words, show_details=True):
                 bag[i] = 1
                 if show_details:
                     print("found in bag: %s" % w)
-    print("Bag ====")
-    print(bag)
     return(np.array(bag))
 
 
 def predict_class(sentence, model, words, classes):
     # filter out predictions below a threshold
-    p = bow(sentence, words, show_details=False)
+    p = bow(sentence, words, False)
+
     res = model.predict(np.array([p]))[0]
+
     ERROR_THRESHOLD = 0.25
     results = [[i, r] for i, r in enumerate(res) if r > ERROR_THRESHOLD]
     # sort by strength of probability
@@ -55,6 +55,7 @@ def predict_class(sentence, model, words, classes):
 
 
 def getResponse(ints, intents_json):
+    print(ints)
     tag = ints[0]['intent']
     list_of_intents = intents_json['intents']
     for i in list_of_intents:
@@ -76,10 +77,5 @@ def predict(msg, data, model=None):
     if model is None:
         model = load_model('chatbot_model.h5')
 
-    print(words)
-    print(classes)
-
     ints = predict_class(msg, model, words, classes)
-    print("ints = ")
-    print(ints)
     return getResponse(ints, intents)

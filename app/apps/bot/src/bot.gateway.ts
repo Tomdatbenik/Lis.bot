@@ -130,6 +130,7 @@ export class BotGateway {
         await context.reply("Me be baka, I can't handle this! (─‿‿─)");
       }
       this.botservice.saveMessage(context);
+      await context.reply(await this.botservice.chat(context.content));
     }
   }
 }
