@@ -18,7 +18,6 @@ export default class Word {
   ) {
     this.uuid = randomUUID();
     this.word = word ? word : '';
-    this.used = used ? used : 0;
     this.context = context ? context : ContextType.random;
     this.topic = topic ? topic : '';
     this.received = new Date();
@@ -30,9 +29,6 @@ export default class Word {
 
   @Column({ unique: true })
   word!: string;
-
-  @Column()
-  used?: number;
 
   @Column({ type: 'enum', enum: ContextType, default: ContextType.random })
   context!: ContextType;

@@ -27,7 +27,9 @@ def bow(sentence, words, show_details=True):
     # tokenize the pattern
     sentence_words = clean_up_sentence(sentence)
     # bag of words - matrix of N words, vocabulary matrix
+
     bag = [0]*len(words)
+    print(bag)
     for s in sentence_words:
         for i, w in enumerate(words):
             if w == s:

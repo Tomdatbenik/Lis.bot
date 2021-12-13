@@ -3,6 +3,8 @@ import DiscordMessage from 'apps/common/entities/message.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, SelectQueryBuilder } from 'typeorm';
 import Word from 'apps/common/entities/word-entity';
+import { MessageHandlerService } from './message-handler.service';
+import { unwatchFile } from 'fs';
 
 @Injectable()
 export class WordService {
@@ -11,26 +13,28 @@ export class WordService {
   constructor(
     @InjectRepository(Word)
     private repository: Repository<Word>,
+    private messageService: MessageHandlerService,
   ) {}
 
   async saveWords(message: DiscordMessage): Promise<void> {
     const words = message.message.split(' ');
-
+    const saveWords: Word[] = [];
     words.forEach(async (w) => {
-      w = w.replace('?', '').replace('.', '').replace(',', '');
-      
+      w = w.replace('.', '').replace(',', '');
+
       const word: Word = await this.findWord(w);
 
-      if (word) {
-        this.logger.log(`Found ${word.word}`);
-        word.used += 1;
-        this.repository.save(word);
-        this.logger.log(`updated ${word.word}`);
-      } else {
-        const newWord = new Word(w);
-        await this.repository.save(newWord);
-        this.logger.log(`Saved ${newWord.word}`);
+      console.log(word);
+
+      if (word == undefined) {
+        saveWords.push(new Word(w));
       }
+    });
+
+    console.log('save words = ');
+    console.log(saveWords);
+    saveWords.forEach(async (w) => {
+      await this.repository.save(w);
     });
   }
 
@@ -39,5 +43,37 @@ export class WordService {
       .createQueryBuilder('word')
       .where('word.word = :word', { word: `${word}` })
       .getOne();
+  }
+
+  async bag(): Promise<number[]> {
+    const words = await this.repository.find();
+    return [];
+  }
+
+  async createBag() {
+    await this.repository.clear();
+
+    const messages = await this.messageService.getAll();
+
+    const saveWords: Word[] = [];
+
+    messages.forEach(async (message) => {
+      const words = message.message.split(' ');
+      words.forEach(async (w) => {
+        w = w.replace('.', '').replace(',', '');
+
+        const word: Word = saveWords.find((word) => word.word == w);
+
+        if (word == undefined && w != '') {
+          saveWords.push(new Word(w));
+        }
+      });
+    });
+
+    console.log('save words = ');
+    console.log(saveWords);
+    saveWords.forEach(async (w) => {
+      await this.repository.save(w);
+    });
   }
 }

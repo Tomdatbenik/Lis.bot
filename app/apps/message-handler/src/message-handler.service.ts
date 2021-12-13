@@ -19,4 +19,8 @@ export class MessageHandlerService {
   getHello(): string {
     return 'Hello World!';
   }
+
+  async getAll(): Promise<DiscordMessage[]> {
+    return await this.repository.find();
+  }
 }
