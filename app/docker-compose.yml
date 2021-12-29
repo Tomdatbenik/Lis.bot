@@ -1,0 +1,45 @@
+version: '3.7'
+services:
+  gateway:
+    container_name: gateway
+    build:
+      context: .
+      dockerfile: ./apps/gateway/Dockerfile.gateway
+    ports:
+      - ${GATEWAY_PORT}:${GATEWAY_PORT}
+    # image: registry.gitlab.com/vitalitylivinglab/docker-compose/project-service:develop-3dfd6c6a
+    environment:
+        - GATEWAY_PORT=${GATEWAY_PORT}
+        - MESSAGE_HANDLER_PORT=${MESSAGE_HANDLER_PORT}
+        - BOT_PORT=${BOT_PORT}
+        - WEATHER_PORT=${WEATHER_PORT}
+        - BOT_TOKEN=${BOT_TOKEN}
+        - MESSAGE_HANDLER=${MESSAGE_HANDLER}
+        - MESSAGE_HANDLER_URL=${MESSAGE_HANDLER_URL}
+        - WEATHER=${WEATHER}
+        - WEATHER_URL=${WEATHER_URL}
+        - AI=${AI}
+        - AI_URL=${AI_URL}
+        - MESSAGE_DB_HOST=${MESSAGE_DB_HOST}
+        - MESSAGE_DB_USERNAME=${MESSAGE_DB_USERNAME}
+        - MESSAGE_DB_PASSWORD=${MESSAGE_DB_PASSWORD}
+        - MESSAGE_DB_DATABASE=${MESSAGE_DB_DATABASE}
+        - MESSAGE_DB_PORT=${MESSAGE_DB_PORT}
+        - MESSAGE_DB_SYNCHRONIZE=${MESSAGE_DB_SYNCHRONIZE}
+        - MESSAGE_DB_LOGGING=${MESSAGE_DB_LOGGING}
+        - MESSAGE_DB_MIGRATIONS_RUN=${MESSAGE_DB_MIGRATIONS_RUN}
+        - MESSAGE_DB_ENTITIES=${MESSAGE_DB_ENTITIES}
+        - MESSAGE_DB_MIGRATIONS=${MESSAGE_DB_MIGRATIONS}
+        - MESSAGE_DB_MIGRATIONS_DIR=${MESSAGE_DB_MIGRATIONS_DIR}
+  bot:
+    container_name: bot
+    build:
+      context: .
+      dockerfile: ./apps/bot/Dockerfile.bot
+    ports:
+      - ${BOT_PORT}:${BOT_PORT}
+    environment:
+        - BOT_PORT=${BOT_PORT}
+        - BOT_TOKEN=${BOT_TOKEN}
+
+

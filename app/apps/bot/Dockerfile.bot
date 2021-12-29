@@ -1,0 +1,27 @@
+FROM node:14.16-alpine as bot-install-env
+
+COPY ./package.json /bot/install/package.json
+COPY ./package-lock.json /bot/install/package-lock.json
+
+WORKDIR /bot/install
+
+RUN npm install
+
+FROM node:14.16-alpine as bot-build-env
+
+COPY . /bot/build
+COPY --from=bot-install-env /bot/install/node_modules /bot/build/node_modules
+
+WORKDIR /bot/build
+
+RUN npm run build bot
+
+FROM node:14.16-alpine as bot-prod-env
+
+WORKDIR /bot/app
+
+COPY --from=bot-build-env /bot/build/dist/apps/bot /bot/app
+COPY --from=bot-install-env /bot/install/node_modules /bot/app/node_modules
+
+CMD ["node", "main"]
+

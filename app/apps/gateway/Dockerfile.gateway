@@ -1,0 +1,27 @@
+FROM node:14.16-alpine as gateway-install-env
+
+COPY ./package.json /gateway/install/package.json
+COPY ./package-lock.json /gateway/install/package-lock.json
+
+WORKDIR /gateway/install
+
+RUN npm install
+
+FROM node:14.16-alpine as gateway-build-env
+
+COPY . /gateway/build
+COPY --from=gateway-install-env /gateway/install/node_modules /gateway/build/node_modules
+
+WORKDIR /gateway/build
+
+RUN npm run build gateway
+
+FROM node:14.16-alpine as gateway-prod-env
+
+WORKDIR /gateway/app
+
+COPY --from=gateway-build-env /gateway/build/dist/apps/gateway /gateway/app
+COPY --from=gateway-install-env /gateway/install/node_modules /gateway/app/node_modules
+
+CMD ["node", "main"]
+
