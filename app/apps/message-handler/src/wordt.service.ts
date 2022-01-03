@@ -4,17 +4,19 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, SelectQueryBuilder } from 'typeorm';
 import Word from 'apps/common/entities/word-entity';
 import { MessageHandlerService } from './message-handler.service';
-import { unwatchFile } from 'fs';
+import { Tagger, Lexer } from 'pos';
 
 @Injectable()
 export class WordService {
   private readonly logger = new Logger(WordService.name);
+  private readonly tagger = new Tagger();
+  private readonly lexer = new Lexer();
 
   constructor(
     @InjectRepository(Word)
     private repository: Repository<Word>,
     private messageService: MessageHandlerService,
-  ) {}
+  ) { }
 
   async saveWords(message: DiscordMessage): Promise<void> {
     const words = message.message.split(' ');
@@ -58,19 +60,32 @@ export class WordService {
     const saveWords: Word[] = [];
 
     messages.forEach(async (message) => {
-      const words = message.message.split(' ');
-      words.forEach(async (w) => {
-        w = w.replace('.', '').replace(',', '');
+      const discordIdReg = /<@.?[0-9]*?>/g
+
+      message.message = message.message.replace(discordIdReg, "Discordusername")
+      message.message = message.message.replace(discordIdReg, "Discordusername")
+      this.logger.log(`handling message :${message.message}`)
+
+      const words = this.lexer.lex(message.message);
+      const taggedWords = this.tagger.tag(words);
+
+      for (let i = 0; i < taggedWords.length; i++) {
+        const taggedWord = taggedWords[i];
+        const w = taggedWord[0];
+        const tag = taggedWord[1];
+
+        this.logger.log(`handling word:${w}, tag: ${tag}`)
 
         const word: Word = saveWords.find((word) => word.word == w);
 
-        if (word == undefined && w != '') {
-          saveWords.push(new Word(w));
+        if (word == undefined) {
+          const newWord = new Word(w);
+          newWord.tag = tag;
+          saveWords.push(newWord);
         }
-      });
+      }
     });
 
-    console.log('save words = ');
     console.log(saveWords);
     saveWords.forEach(async (w) => {
       await this.repository.save(w);

@@ -12,14 +12,12 @@ import ContextType from '../enums/Context.enum';
 export default class Word {
   constructor(
     word?: string,
-    context?: ContextType,
-    topic?: string,
+    tag?: string,
     used?: number,
   ) {
     this.uuid = randomUUID();
     this.word = word ? word : '';
-    this.context = context ? context : ContextType.random;
-    this.topic = topic ? topic : '';
+    this.tag = tag ? tag : '';
     this.received = new Date();
     this.updated = new Date();
   }
@@ -30,11 +28,8 @@ export default class Word {
   @Column({ unique: true })
   word!: string;
 
-  @Column({ type: 'enum', enum: ContextType, default: ContextType.random })
-  context!: ContextType;
-
   @Column()
-  topic?: string;
+  tag?: string;
 
   @CreateDateColumn()
   received?: Date;

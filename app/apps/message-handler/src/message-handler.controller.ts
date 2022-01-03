@@ -9,11 +9,16 @@ export class MessageHandlerController {
   constructor(
     private readonly messageHandlerService: MessageHandlerService,
     private readonly wordService: WordService,
-  ) {}
+  ) { }
 
   @Get('/bag')
   async bag(@Param('message') message: string): Promise<number[]> {
     return await this.wordService.bag();
+  }
+
+  @Post('/createBag')
+  async createBag(): Promise<any> {
+    return await this.wordService.createBag();
   }
 
   @Get()
