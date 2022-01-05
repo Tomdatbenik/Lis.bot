@@ -8,6 +8,7 @@ import Word from 'apps/common/entities/word-entity';
 import Intend from 'apps/common/entities/Intend.entity';
 import AiData from 'apps/common/entities/aiData.entity';
 import { ScheduleModule } from '@nestjs/schedule';
+import { DictionaryService } from './dictionary.service';
 
 @Module({
   imports: [
@@ -25,6 +26,6 @@ import { ScheduleModule } from '@nestjs/schedule';
     TypeOrmModule.forFeature([DiscordMessage, Word, Intend, AiData]),
   ],
   controllers: [MessageHandlerController],
-  providers: [MessageHandlerService, WordService],
+  providers: [MessageHandlerService, WordService, DictionaryService],
 })
-export class MessageHandlerModule {}
+export class MessageHandlerModule { }

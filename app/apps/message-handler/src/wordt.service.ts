@@ -52,7 +52,7 @@ export class WordService {
     return [];
   }
 
-  async createBag() {
+  async createBag(): Promise<Word[]> {
     await this.repository.clear();
 
     const messages = await this.messageService.getAll();
@@ -64,19 +64,20 @@ export class WordService {
 
       message.message = message.message.replace(discordIdReg, "Discordusername")
       message.message = message.message.replace(discordIdReg, "Discordusername")
+      
       this.logger.log(`handling message :${message.message}`)
 
       const words = this.lexer.lex(message.message);
       const taggedWords = this.tagger.tag(words);
 
       for (let i = 0; i < taggedWords.length; i++) {
-        const taggedWord = taggedWords[i];
-        const w = taggedWord[0];
+        const taggedWord: string[] = taggedWords[i];
+        const w = taggedWord[0].toLowerCase();
         const tag = taggedWord[1];
 
         this.logger.log(`handling word:${w}, tag: ${tag}`)
 
-        const word: Word = saveWords.find((word) => word.word == w);
+        const word: Word = saveWords.find((word) => word.word.toLowerCase() == w);
 
         if (word == undefined) {
           const newWord = new Word(w);
@@ -86,9 +87,11 @@ export class WordService {
       }
     });
 
-    console.log(saveWords);
     saveWords.forEach(async (w) => {
       await this.repository.save(w);
     });
+
+    this.logger.log(`bag contains: ${saveWords.length}`);
+    return saveWords;
   }
 }
