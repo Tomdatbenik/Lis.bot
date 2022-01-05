@@ -14,7 +14,11 @@ export class Meaning {
   definitions: Definition[];
 }
 
-export class Dictonairy {
+export class Dictionary {
+  constructor(word?: string) {
+    this.word = word
+  }
+  
   word: string;
   phonetics: Phonetic[];
   meanings: Meaning[];

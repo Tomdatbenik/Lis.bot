@@ -1,4 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { Dictionary as Dictionary } from 'apps/common/dto/dictionary.dto';
+import DiscordMessage from 'apps/common/entities/message.entity';
+import { randomUUID } from 'crypto';
 import {
   Once,
   DiscordClientProvider,
@@ -13,13 +16,14 @@ import {
 } from 'discord-nestjs';
 import { Message, TextChannel } from 'discord.js';
 import { BotService } from './bot.service';
+import { DictionaryInputDto as DictionaryInputDto } from './dto/dictionaryInput.dto';
 import { UserDto } from './dto/user.dto';
-import { weatherInputDto } from './dto/weatherInput.dto';
+import { WeatherInputDto } from './dto/weatherInput.dto';
 
 @Injectable()
 export class BotGateway {
   private readonly logger = new Logger(BotGateway.name);
-  constructor(private readonly botservice: BotService) {}
+  constructor(private readonly botservice: BotService) { }
 
   @Client()
   discordProvider: ClientProvider;
@@ -60,7 +64,7 @@ export class BotGateway {
   //#region Weather
   @OnCommand({ name: 'weather' })
   async onWeatherCommandEnglish(
-    @Content() content: weatherInputDto,
+    @Content() content: WeatherInputDto,
     @Context() [context]: [Message],
   ): Promise<void> {
     await this.botservice.saveMessage(context);
@@ -72,7 +76,7 @@ export class BotGateway {
 
   @OnCommand({ name: 'weer', prefix: '' })
   async onWeatherCommandDutch(
-    @Content() content: weatherInputDto,
+    @Content() content: WeatherInputDto,
     @Context() [context]: [Message],
   ): Promise<void> {
     await this.botservice.saveMessage(context);
@@ -84,7 +88,7 @@ export class BotGateway {
 
   @OnCommand({ name: 'w', prefix: '' })
   async onWeatherCommandShort(
-    @Content() content: weatherInputDto,
+    @Content() content: WeatherInputDto,
     @Context() [context]: [Message],
   ): Promise<void> {
     await this.botservice.saveMessage(context);
@@ -96,7 +100,7 @@ export class BotGateway {
 
   @OnCommand({ name: 'forecast' })
   async onForecastCommand(
-    @Content() content: weatherInputDto,
+    @Content() content: WeatherInputDto,
     @Context() [context]: [Message],
   ): Promise<void> {
     await this.botservice.saveMessage(context);
@@ -107,18 +111,75 @@ export class BotGateway {
   }
   //#endregion
 
+  //#region dictionary
+  @OnCommand({ name: 'dictionary' })
+  async onDictionaryCommand(
+    @Content() content: DictionaryInputDto,
+    @Context() [context]: [Message],
+  ): Promise<void> {
+
+    const dictionaries: Dictionary[] = await this.botservice.getDictionary(content.word);
+
+    console.log(dictionaries)
+
+    let response = 'The word: ' + content.word + ' has ' +
+      dictionaries.length + ' ' + (dictionaries.length > 0 ? ' results' : ' result')
+      + '\n';
+
+    for (let i = 0; i < dictionaries.length; i++) {
+      const dictionary = dictionaries[i];
+      response += 'result ' + (i + 1) + ': \n';
+
+      dictionary.meanings.forEach(meaning => {
+        meaning.definitions.forEach(definition => {
+          response += 'definition: ' + definition.definition + '\n';
+          response += definition.example ? 'example: ' + definition.example + '\n \n' : '\n'
+        })
+      })
+    }
+
+    await this.botservice.saveDictionaryMessage(new DiscordMessage(
+      context.content,
+      context.author.id,
+      context.author.username,
+      randomUUID(),
+      response,
+      'dictionary'
+    ));
+
+    await context.reply(
+      response
+    );
+  }
+  //#endregion
+
+  //#region bag
+  @OnCommand({ name: 'bag' })
+  async onBagCommand(
+    @Context() [context]: [Message],
+  ): Promise<void> {
+    await this.botservice.saveMessage(context);
+
+    const bag = await this.botservice.createBag();
+
+    await context.reply(
+      `${bag.length} `
+    );
+  }
+  //#endregion
+
   //#region Day
   @OnCommand({ name: 'friday?' })
   async onFridayCommand(message: Message): Promise<void> {
     await message.reply(
-      `When will it be friday hmmm who knows :3: ${message.content}`,
+      `When will it be friday hmmm who knows: 3: ${message.content} `,
     );
   }
 
   @OnCommand({ name: 'today' })
   async onDayCommand(message: Message): Promise<void> {
     await message.reply(
-      `What is today are we today is u today? :3: ${message.content}`,
+      `What is today are we today is u today ? : 3: ${message.content} `,
     );
   }
   //#endregion
@@ -130,7 +191,11 @@ export class BotGateway {
         await context.reply("Me be baka, I can't handle this! (─‿‿─)");
       }
       this.botservice.saveMessage(context);
-      await context.reply(await this.botservice.chat(context.content));
+      const response = await this.botservice.chat(context.content);
+      
+      console.log(response)
+
+      await context.reply(response ? response : "Me be baka, (─‿‿─)");
     }
   }
 }

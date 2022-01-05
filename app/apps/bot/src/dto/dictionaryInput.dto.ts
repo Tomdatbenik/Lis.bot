@@ -1,9 +1,9 @@
 import { Expose, Type } from 'class-transformer';
 import { ArgNum } from 'discord-nestjs';
 
-export class WeatherInputDto {
+export class DictionaryInputDto {
   @ArgNum(() => ({ position: 1 }))
   @Expose()
   @Type(() => String)
-  location: string;
+  word: string;
 }

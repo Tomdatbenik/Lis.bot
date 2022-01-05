@@ -1,6 +1,6 @@
-import { Body, Controller, Get, Logger, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Logger, Param, Post, Query } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { Dictonairy as Dictionary } from 'apps/common/dto/dictonairy.dto';
+import { Dictionary as Dictionary } from 'apps/common/dto/dictionary.dto';
 import DiscordMessage from 'apps/common/entities/message.entity';
 import { DictionaryService } from './dictionary.service';
 import { MessageHandlerService } from './message-handler.service';
@@ -15,18 +15,14 @@ export class MessageHandlerController {
   ) { }
 
   @Get('/bag')
-  async bag(@Param('message') message: string): Promise<number[]> {
+  async bag(): Promise<number[]> {
     return await this.wordService.bag();
   }
-  
-  @Get('/dictionary')
-  async dictonairy(@Param('word') word: string): Promise<Dictionary> {
-    return await this.dictionaryService.dictionary(word);
-  }
 
-  @Post('/createBag')
-  async createBag(): Promise<any> {
-    return await this.wordService.createBag();
+  @Get('/dictionary/')
+  async dictonairy(@Query('word') word: string): Promise<Dictionary[]> {
+
+    return await this.dictionaryService.dictionary(word);
   }
 
   @Get()
@@ -40,6 +36,11 @@ export class MessageHandlerController {
   async learn() {
     Logger.log('Creating bag');
     await this.wordService.createBag();
+  }
+
+  @Post('/createBag')
+  async createBag(): Promise<any> {
+    return await this.wordService.createBag();
   }
 
   @Post()

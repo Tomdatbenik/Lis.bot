@@ -1,4 +1,5 @@
 import { HttpException, HttpService, Injectable, Logger } from '@nestjs/common';
+import { Dictionary } from 'apps/common/dto/dictionary.dto';
 import { weatherDTO } from 'apps/common/dto/weather.dto';
 import DiscordMessage from 'apps/common/entities/message.entity';
 import { UserDto } from './dto/user.dto';
@@ -41,6 +42,26 @@ export class BotService {
           context.author.id,
           context.author.username,
         ),
+      })
+      .toPromise()
+      .then((result) => {
+        return result.data as DiscordMessage;
+      })
+      .catch((err) => {
+        this.logger.error(`Could not save message: ${err}`);
+
+        return new DiscordMessage('');
+      });
+
+    return discordMessage;
+  }
+
+  async saveDictionaryMessage(message: DiscordMessage): Promise<DiscordMessage> {
+    const discordMessage: DiscordMessage = await this.httpService
+      .request({
+        url: `http://localhost:8079/message-handler/`,
+        method: 'post',
+        data: message,
       })
       .toPromise()
       .then((result) => {
@@ -105,6 +126,46 @@ export class BotService {
     Humidity: ${weather.current.humidity}
     Wind: ${weather.current.winddisplay}
     The sky looks like: ${weather.current.skytext}`;
+  }
+
+  async getDictionary(word: string): Promise<Dictionary[]> {
+    const dictionaries: Dictionary[] = await this.httpService
+      .request({
+        url: `http://localhost:8079/message-handler/dictionary/`,
+        method: 'get',
+        params: { word: word },
+      })
+      .toPromise()
+      .then((result) => {
+        console.log(result.data)
+        return result.data as Dictionary[];
+      })
+      .catch((err) => {
+        this.logger.error(`Could not save message: ${err}`);
+
+        return [];
+      });
+
+    return dictionaries;
+  }
+
+  async createBag(): Promise<string[]> {
+    const bag: string[] = await this.httpService
+      .request({
+        url: `http://localhost:8079/message-handler/createBag`,
+        method: 'post',
+      })
+      .toPromise()
+      .then((result) => {
+        return result.data as string[];
+      })
+      .catch((err) => {
+        this.logger.error(`Could not save message: ${err}`);
+
+        return [];
+      });
+
+    return bag;
   }
 
   async chat(msg): Promise<string> {
