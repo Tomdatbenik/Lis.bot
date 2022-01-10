@@ -1,6 +1,6 @@
 import { randomUUID } from 'crypto';
 
-export default class IntendDto {
+export default class IntentDto {
   constructor(
     tag?: string,
     patterns?: string[],
