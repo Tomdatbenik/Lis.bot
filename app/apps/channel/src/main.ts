@@ -11,7 +11,7 @@ async function bootstrap() {
   app.enableCors();
   
   await app.startAllMicroservicesAsync();
-  await app.listen(process.env.CHANNEL_HANDLER_PORT);
+  await app.listen(process.env.CHANNEL_PORT);
   const logger = new Logger('NestApplication');
   logger.log(`Message handler is running on: ${await app.getUrl()}`);
 }

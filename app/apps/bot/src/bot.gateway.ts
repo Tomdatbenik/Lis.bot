@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Dictionary as Dictionary } from 'apps/common/dto/dictionary.dto';
 import DiscordMessage from 'apps/common/entities/message.entity';
+import { ChannelAITypes } from 'apps/common/enums/channelAITypes.enum';
 import { randomUUID } from 'crypto';
 import {
   Once,
@@ -33,6 +34,12 @@ export class BotGateway {
     this.logger.log(
       `Logged in as ${this.discordProvider.getClient().user.tag}!`,
     );
+  }
+
+  async sendMessage(message: DiscordMessage, channelId: string): Promise<void> {
+    const client = this.discordProvider.getClient();
+    const channel = await client.channels.fetch(channelId);
+    (channel as TextChannel).send(message.message);
   }
 
   //#region simple stuff
@@ -166,17 +173,25 @@ export class BotGateway {
   }
   //#endregion
 
-  //#region channel test
-  @OnCommand({ name: 'channel' })
+  //#region channel
+  @OnCommand({ name: 'toggleAi' })
   async onChannelCommand(
     @Context() [context]: [Message],
   ): Promise<void> {
 
     console.log(context.channel)
 
-    await context.reply(
-      `testing channel data channel: ${context.channel.id}`
-    );
+    const channel = await this.botservice.toggleAi(context.channelId)
+    if (channel) {
+      await context.reply(
+        `Toggled channel: ${(context.channel as TextChannel).name} to ${ChannelAITypes[channel.learn]}.`
+      );
+    }
+    else {
+      await context.reply(
+        `Can't toggle right now :(`
+      );
+    }
   }
   //#endregion
 

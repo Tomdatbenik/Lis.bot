@@ -1,6 +1,7 @@
 import { HttpException, HttpService, Injectable, Logger } from '@nestjs/common';
 import { Dictionary } from 'apps/common/dto/dictionary.dto';
 import { weatherDTO } from 'apps/common/dto/weather.dto';
+import Channel from 'apps/common/entities/channel.entity';
 import DiscordMessage from 'apps/common/entities/message.entity';
 import { UserDto } from './dto/user.dto';
 
@@ -146,6 +147,25 @@ export class BotService {
       });
 
     return dictionaries;
+  }
+
+  async toggleAi(channelId: string): Promise<Channel> {
+    const channel: Channel = await this.httpService
+      .request({
+        url: `http://localhost:8079/${process.env.CHANNEL}/ai`,
+        method: 'put',
+        params: { id: channelId },
+      })
+      .toPromise()
+      .then((result) => {
+        return result.data as Channel;
+      })
+      .catch((err) => {
+        this.logger.error(`Could not save message: ${err}`);
+        return null;
+      });
+
+    return channel;
   }
 
   async createBag(): Promise<string[]> {

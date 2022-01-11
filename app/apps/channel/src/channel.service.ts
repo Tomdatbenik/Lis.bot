@@ -1,8 +1,35 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import Channel from 'apps/common/entities/channel.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class ChannelService {
-  getHello(): string {
-    return 'Hello World!';
+  constructor(
+    @InjectRepository(Channel)
+    private repository: Repository<Channel>,
+  ) { }
+
+  private readonly logger = new Logger(ChannelService.name);
+
+  async updateChannel(channel: Channel): Promise<Channel> {
+    return await this.repository.save(channel);
   }
+
+  async saveChannel(channel: Channel): Promise<Channel> {
+    return await this.repository.save(channel);
+  }
+
+  async findOne(id: string): Promise<Channel> {
+    return await this.repository
+      .findOne(id)
+      .then(async (project) => {
+        return project;
+      })
+      .catch((error) => {
+        throw new BadRequestException(error);
+      });
+  }
+
+
 }
