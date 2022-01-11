@@ -10,7 +10,7 @@ import {
 import AiData from './aiData.entity';
 
 @Entity()
-export default class Intend {
+export default class Intent {
   constructor(
     tag?: string,
     patterns?: string[],

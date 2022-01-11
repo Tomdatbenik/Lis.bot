@@ -12,7 +12,7 @@ export class BotService {
   async getHello(message: string): Promise<string> {
     const response = await this.httpService
       .request({
-        url: `http://localhost:8079/message-handler/`,
+        url: `http://localhost:8079/${process.env.MESSAGE_HANDLER}/`,
         method: 'get',
         params: {
           message: message,
@@ -35,7 +35,7 @@ export class BotService {
   async saveMessage(context: any): Promise<DiscordMessage> {
     const discordMessage: DiscordMessage = await this.httpService
       .request({
-        url: `http://localhost:8079/message-handler/`,
+        url: `http://localhost:8079/${process.env.MESSAGE_HANDLER}/`,
         method: 'post',
         data: new DiscordMessage(
           context.content,
@@ -59,7 +59,7 @@ export class BotService {
   async saveDictionaryMessage(message: DiscordMessage): Promise<DiscordMessage> {
     const discordMessage: DiscordMessage = await this.httpService
       .request({
-        url: `http://localhost:8079/message-handler/`,
+        url: `http://localhost:8079/${process.env.MESSAGE_HANDLER}/`,
         method: 'post',
         data: message,
       })
@@ -95,7 +95,7 @@ export class BotService {
 
     const weather: weatherDTO = await this.httpService
       .request({
-        url: `http://localhost:8079/weather/`,
+        url: `http://localhost:8079/${process.env.WEATHER}/`,
         method: 'get',
         params: {
           location: location,
@@ -131,13 +131,12 @@ export class BotService {
   async getDictionary(word: string): Promise<Dictionary[]> {
     const dictionaries: Dictionary[] = await this.httpService
       .request({
-        url: `http://localhost:8079/message-handler/dictionary/`,
+        url: `http://localhost:8079/${process.env.MESSAGE_HANDLER}/dictionary/`,
         method: 'get',
         params: { word: word },
       })
       .toPromise()
       .then((result) => {
-        console.log(result.data)
         return result.data as Dictionary[];
       })
       .catch((err) => {
@@ -152,7 +151,7 @@ export class BotService {
   async createBag(): Promise<string[]> {
     const bag: string[] = await this.httpService
       .request({
-        url: `http://localhost:8079/message-handler/createBag`,
+        url: `http://localhost:8079/${process.env.MESSAGE_HANDLER}/createBag`,
         method: 'post',
       })
       .toPromise()

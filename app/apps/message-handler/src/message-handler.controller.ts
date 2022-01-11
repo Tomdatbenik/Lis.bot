@@ -21,7 +21,6 @@ export class MessageHandlerController {
 
   @Get('/dictionary/')
   async dictonairy(@Query('word') word: string): Promise<Dictionary[]> {
-
     return await this.dictionaryService.dictionary(word);
   }
 

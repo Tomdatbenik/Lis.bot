@@ -7,11 +7,11 @@ import {
   UpdateDateColumn,
   OneToMany,
 } from 'typeorm';
-import Intend from './Intend.entity';
+import Intent from './Intent.entity';
 
 @Entity()
 export default class AiData {
-  constructor(tag?: string, intends?: Intend[]) {
+  constructor(tag?: string, intends?: Intent[]) {
     this.uuid = randomUUID();
 
     this.intends = intends;
@@ -22,8 +22,8 @@ export default class AiData {
   @PrimaryGeneratedColumn('uuid')
   uuid?: string;
 
-  @OneToMany(() => Intend, (intend) => intend.aiData, { eager: true })
-  intends!: Intend[];
+  @OneToMany(() => Intent, (intend) => intend.aiData, { eager: true })
+  intends!: Intent[];
 
   @CreateDateColumn()
   created?: Date;

@@ -9,7 +9,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
 
   app.enableCors();
-  BOT_TOKEN=ODg2ODkwODk2OTI1MjkwNDk2.YT8Lgw.DeYg6m3036PICKlBDI_wQPjjjlQ
+  
   await app.startAllMicroservicesAsync();
   await app.listen(process.env.MESSAGE_HANDLER_PORT);
   const logger = new Logger('NestApplication');

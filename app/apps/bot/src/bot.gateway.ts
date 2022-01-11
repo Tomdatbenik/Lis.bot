@@ -120,8 +120,6 @@ export class BotGateway {
 
     const dictionaries: Dictionary[] = await this.botservice.getDictionary(content.word);
 
-    console.log(dictionaries)
-
     let response = 'The word: ' + content.word + ' has ' +
       dictionaries.length + ' ' + (dictionaries.length > 0 ? ' results' : ' result')
       + '\n';
@@ -168,6 +166,20 @@ export class BotGateway {
   }
   //#endregion
 
+  //#region channel test
+  @OnCommand({ name: 'channel' })
+  async onChannelCommand(
+    @Context() [context]: [Message],
+  ): Promise<void> {
+
+    console.log(context.channel)
+
+    await context.reply(
+      `testing channel data channel: ${context.channel.id}`
+    );
+  }
+  //#endregion
+
   //#region Day
   @OnCommand({ name: 'friday?' })
   async onFridayCommand(message: Message): Promise<void> {
@@ -192,8 +204,6 @@ export class BotGateway {
       }
       this.botservice.saveMessage(context);
       const response = await this.botservice.chat(context.content);
-      
-      console.log(response)
 
       await context.reply(response ? response : "Me be baka, (─‿‿─)");
     }

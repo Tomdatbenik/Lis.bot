@@ -6,7 +6,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import ContextType from '../enums/Context.enum';
+import ContextType from '../enums/context.enum';
 
 @Entity()
 export default class Word {

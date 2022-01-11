@@ -1,5 +1,5 @@
 import { randomUUID } from 'crypto';
-import IntendDto from './Intend.dto';
+import IntendDto from './Intent.dto';
 
 export default class AiDataDto {
   constructor(tag?: string, intends?: IntendDto[]) {

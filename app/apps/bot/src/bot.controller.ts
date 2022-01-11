@@ -9,4 +9,7 @@ export class BotController {
   getHello(): string {
     return "hoi";
   }
+
+  @Get("channel")
+  channel(): Channel
 }
