@@ -66,8 +66,11 @@ export class MessageHandlerController {
   @Post('/response')
   async response(@Body() response: ResponseDto,): Promise<void> {
     const message = await this.messageHandlerService.getMessageByMinId(response.minId)
-    message.response = response.response;
-    await this.messageHandlerService.saveMessage(message);
+
+    if (message != undefined) {
+      message.response = response.response;
+      await this.messageHandlerService.saveMessage(message);
+    }
   }
 
   @Post('/createBag')
