@@ -1,7 +1,9 @@
 import { Body, Controller, Get, Logger, Param, Post, Query } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { Dictionary as Dictionary } from 'apps/common/dto/dictionary.dto';
+import ResponseDto from 'apps/common/dto/response.dto';
 import DiscordMessage from 'apps/common/entities/message.entity';
+import { response } from 'express';
 import { DictionaryService } from './dictionary.service';
 import { MessageHandlerService } from './message-handler.service';
 import { TeachService } from './teach.service';
@@ -59,6 +61,13 @@ export class MessageHandlerController {
   @Cron("0 */29 * * * *")
   async learnChannel1Hour() {
     this.messageHandlerService.resetMessageMiniIds();
+  }
+
+  @Post('/response')
+  async response(@Body() response: ResponseDto,): Promise<void> {
+    const message = await this.messageHandlerService.getMessageByMinId(response.minId)
+    message.response = response.response;
+    await this.messageHandlerService.saveMessage(message);
   }
 
   @Post('/createBag')

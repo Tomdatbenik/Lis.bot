@@ -1,5 +1,6 @@
 import { HttpException, HttpService, Injectable, Logger } from '@nestjs/common';
 import { Dictionary } from 'apps/common/dto/dictionary.dto';
+import ResponseDto from 'apps/common/dto/response.dto';
 import { weatherDTO } from 'apps/common/dto/weather.dto';
 import Channel from 'apps/common/entities/channel.entity';
 import DiscordMessage from 'apps/common/entities/message.entity';
@@ -75,6 +76,19 @@ export class BotService {
       });
 
     return discordMessage;
+  }
+
+  async giveResponse(minId: string, response: string): Promise<void> {
+    await this.httpService
+      .request({
+        url: `http://localhost:8079/${process.env.MESSAGE_HANDLER}/response`,
+        method: 'post',
+        data: new ResponseDto(minId, response),
+      })
+      .toPromise()
+      .catch((err) => {
+        this.logger.error(`Could not save message: ${err}`);
+      });
   }
 
   getAvatar(content: UserDto): string {
@@ -190,7 +204,7 @@ export class BotService {
   async deleteChannel(id: string): Promise<void> {
     await this.httpService
       .request({
-        url: `http://localhost:8079/${process.env.CHANNEL}/`,
+        url: `http://localhost:8079/${process.env.CHANNEL}/one`,
         method: 'delete',
         params: {
           id: id,

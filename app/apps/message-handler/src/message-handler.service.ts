@@ -39,6 +39,17 @@ export class MessageHandlerService {
     return await this.repository.save(message);
   }
 
+  async getMessageByMinId(minId: string): Promise<DiscordMessage> {
+    return await this.repository
+      .createQueryBuilder("discord_message")
+      .andWhere(`minId != :minId`, { minId: minId })
+      .getOne();
+  }
+
+  async updateMessage(message: DiscordMessage): Promise<void> {
+    this.repository.save(message)
+  }
+
   getHello(): string {
     return 'Hello World!';
   }

@@ -18,6 +18,7 @@ import {
 import { Message, TextChannel } from 'discord.js';
 import { BotService } from './bot.service';
 import { DictionaryInputDto as DictionaryInputDto } from './dto/dictionaryInput.dto';
+import { TeachInputDto } from './dto/teachInput.dto';
 import { UserDto } from './dto/user.dto';
 import { WeatherInputDto } from './dto/weatherInput.dto';
 
@@ -38,13 +39,15 @@ export class BotGateway {
 
   async sendMessage(message: DiscordMessage, channelId: string): Promise<void> {
     const client = this.discordProvider.getClient();
-    const channel = await client.channels.fetch(channelId);
+    try {
+      const channel = await client.channels.fetch(channelId);
 
-    if (!channel.deleted) {
-      (channel as TextChannel).send(message.message);
+      if (!channel.deleted) {
+        (channel as TextChannel).send(message.message);
+      }
     }
-    else {
-      this.botservice.deleteChannel(channel.id);
+    catch {
+      this.botservice.deleteChannel(channelId);
     }
   }
 
@@ -179,7 +182,7 @@ export class BotGateway {
   }
   //#endregion
 
-  //#region channel
+  //#region AI
   @OnCommand({ name: 'toggleAi' })
   async onChannelCommand(
     @Context() [context]: [Message],
@@ -198,6 +201,17 @@ export class BotGateway {
         `Can't toggle right now :(`
       );
     }
+  }
+
+  @OnCommand({ name: 'teach' })
+  async onTeachCommand(
+    @Content() teachInput: TeachInputDto,
+    @Context() [context]: [Message],
+  ): Promise<void> {
+    const commandReg = /!teach ?[0-9]*? /g
+    const message = context.content.replace(commandReg, '');
+
+    this.botservice.giveResponse(teachInput.minId, message)
   }
   //#endregion
 
