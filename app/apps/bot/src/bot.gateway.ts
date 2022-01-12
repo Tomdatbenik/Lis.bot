@@ -211,7 +211,11 @@ export class BotGateway {
     const commandReg = /!teach ?[0-9]*? /g
     const message = context.content.replace(commandReg, '');
 
-    this.botservice.giveResponse(teachInput.minId, message)
+
+    if (message != teachInput.minId) {
+      this.botservice.giveResponse(teachInput.minId, message)
+    }
+
     context.reply('Thanks for teaching me something Senpai!')
   }
   //#endregion
@@ -241,7 +245,7 @@ export class BotGateway {
       this.botservice.saveMessage(context);
       let response = await this.botservice.chat(context.content);
       console.log(response)
- 
+
       response = response != '{}' ? response : "Me be baka, (─‿‿─)";
 
       await context.reply(response ? response : "Me be baka, (─‿‿─)");

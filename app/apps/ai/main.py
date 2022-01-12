@@ -1,11 +1,10 @@
 from nltk.util import pr
 from numpy import chararray
+from tensorflow.python.distribute.distribution_strategy_context import experimental_set_strategy
 from createModel import createModel
 from predict import predict
-from flask import Flask, request
-from os import getenv
+from flask import Flask, abort, request
 import json
-
 
 app = Flask(__name__)
 
@@ -26,11 +25,11 @@ def learn() -> json:
 def chat() -> chararray:
     msg = request.args.get('msg')
 
-    prediction = predict(msg,request.data)
-
-    print(prediction)
-    return prediction
-
+    try:
+        prediction = predict(msg,request.data)
+        return prediction
+    except:
+        return '{"message": "failed predict","statusCode": 500}', 500
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=3002)

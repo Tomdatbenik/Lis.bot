@@ -31,7 +31,7 @@ export default class DiscordMessage {
   @Column()
   context?: string;
 
-  @Column()
+  @Column("longtext")
   response?: string;
 
   @Column()

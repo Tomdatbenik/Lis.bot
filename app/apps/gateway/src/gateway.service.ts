@@ -12,7 +12,7 @@ import ServiceUnavailable from '../../common/exeptions/serviceUnavailable.except
 
 @Injectable()
 export class GatewayService {
-  constructor(private httpService: HttpService) {}
+  constructor(private httpService: HttpService) { }
 
   private logger = new Logger(GatewayService.name);
 
@@ -45,6 +45,7 @@ export class GatewayService {
       .toPromise()
       .catch((result) => {
         if (result.response) {
+          this.logger.error(result.response.data)
           throw new HttpException(
             result.response.data.message,
             result.response.data.statusCode,
