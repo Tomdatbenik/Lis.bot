@@ -212,6 +212,7 @@ export class BotGateway {
     const message = context.content.replace(commandReg, '');
 
     this.botservice.giveResponse(teachInput.minId, message)
+    context.reply('Thanks for teaching me something Senpai!')
   }
   //#endregion
 

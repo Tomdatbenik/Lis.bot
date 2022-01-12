@@ -42,7 +42,7 @@ export class MessageHandlerService {
   async getMessageByMinId(minId: string): Promise<DiscordMessage> {
     return await this.repository
       .createQueryBuilder("discord_message")
-      .andWhere(`minId != :minId`, { minId: minId })
+      .where(`minId = :minId`, { minId: minId })
       .getOne();
   }
 
