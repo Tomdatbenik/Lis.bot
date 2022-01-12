@@ -160,6 +160,11 @@ export class MessageHandlerService {
       .andWhere(`minId != ''`)
       .getMany();
 
+    (await this.getAllAiMarked()).forEach(element => {
+      messages.push(element)
+    });
+
+
     messages.forEach(async message => {
       message.minId = '';
       await this.repository.save(message)
