@@ -54,7 +54,7 @@ export class TeachService {
 
       if (message != undefined) {
         message.message = "How would you respond to the message: \"" + message.message + "\"? \n" +
-          'respond with: !teach ' + message.minId + ' *your anwser*'
+          'respond with: !teach ' + message.minId + ' *text*'
 
         await this.httpService
           .request({
