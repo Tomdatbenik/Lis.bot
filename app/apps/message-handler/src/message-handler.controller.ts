@@ -4,6 +4,7 @@ import { Dictionary as Dictionary } from 'apps/common/dto/dictionary.dto';
 import DiscordMessage from 'apps/common/entities/message.entity';
 import { DictionaryService } from './dictionary.service';
 import { MessageHandlerService } from './message-handler.service';
+import { TeachService } from './teach.service';
 import { WordService } from './wordt.service';
 
 @Controller()
@@ -11,7 +12,8 @@ export class MessageHandlerController {
   constructor(
     private readonly messageHandlerService: MessageHandlerService,
     private readonly wordService: WordService,
-    private readonly dictionaryService: DictionaryService
+    private readonly dictionaryService: DictionaryService,
+    private readonly teachService: TeachService
   ) { }
 
   @Get('/bag')
@@ -24,6 +26,10 @@ export class MessageHandlerController {
     return await this.messageHandlerService.getAiData();
   }
 
+  @Get('/learn')
+  async learnRandomChannel() {
+    this.teachService.sendResponseRequest();
+  }
 
   @Get('/dictionary/')
   async dictonairy(@Query('word') word: string): Promise<Dictionary[]> {
@@ -46,7 +52,7 @@ export class MessageHandlerController {
   @Cron(CronExpression.EVERY_5_MINUTES)
   async learnChannel5Min() {
     Logger.log('EVERY_5_MINUTES');
-    //TODO ask response
+    this.teachService.sendResponseRequest();
   }
 
   @Cron(CronExpression.EVERY_30_MINUTES)

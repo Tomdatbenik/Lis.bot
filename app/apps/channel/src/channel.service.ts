@@ -33,7 +33,14 @@ export class ChannelService {
   }
 
   async findAiChannels(): Promise<Channel[]> {
-    return await this.repository.find({ learn: ChannelAITypes.LEARN });
+    const channels = await this.repository
+      .createQueryBuilder("channel")
+      .where(`channel.learn = :learn`, { learn: ChannelAITypes.LEARN.toString() })
+      .getMany();
+
+    console.log(channels)
+
+    return channels
   }
 
 }

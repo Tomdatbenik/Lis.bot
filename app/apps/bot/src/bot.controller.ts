@@ -6,7 +6,7 @@ import { BotGateway } from './bot.gateway';
 export class BotController {
   constructor(private readonly gateway: BotGateway) { }
 
-  @Put("send/:id")
+  @Post("send/:id")
   async sendMessage(@Param('id') id, @Body() message: DiscordMessage): Promise<void> {
     console.log(message)
     console.log(id)

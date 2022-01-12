@@ -17,8 +17,8 @@ export class ChannelController {
   }
 
   @Get("/ai")
-  async getAiChannels(@Query('id') id): Promise<Channel> {
-    return await this.channelService.findOne(id);
+  async getAiChannels(): Promise<Channel[]> {
+    return await this.channelService.findAiChannels();
   }
 
   @Post()

@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, SelectQueryBuilder, Unique } from 'typeorm';
 import { Tagger, Lexer } from 'pos';
 import * as Intent from 'sentence-intent';
-import { randomUUID } from 'crypto';
+import { randomInt, randomUUID } from 'crypto';
 import IntentDto from 'apps/common/dto/Intent.dto';
 import { Message } from 'discord.js';
 
@@ -49,7 +49,7 @@ export class MessageHandlerService {
     return await this.repository.find();
   }
 
-  removeDuplicatedMessages(arr: DiscordMessage[]): DiscordMessage[] {
+  private removeDuplicatedMessages(arr: DiscordMessage[]): DiscordMessage[] {
     return arr.filter((value, index, self) =>
       index === self.findIndex((o) => (
         o.message.toLowerCase() == value.message.toLowerCase()
@@ -57,7 +57,7 @@ export class MessageHandlerService {
     )
   }
 
-  findMessagesThenFill(arr: string[], arr2: DiscordMessage[]) {
+  private findMessagesThenFill(arr: string[], arr2: DiscordMessage[]) {
     arr2.forEach(message => {
       if (arr.find(i => i == message.intent + message.context) == undefined) {
         arr.push(message.intent + message.context)
@@ -97,5 +97,22 @@ export class MessageHandlerService {
     return intents;
   }
 
+  async getMessageWithoutResponse(): Promise<DiscordMessage> {
+    const messages = await this.repository.find({ message: undefined })
+
+    const randomMessage = messages[randomInt(messages.length)]
+
+    randomMessage.minId = this.getRandomMinId();
+
+    while (await this.repository.find({ minId: randomMessage.minId }) != undefined) {
+      randomMessage.minId = this.getRandomMinId();
+    }
+
+    return await this.repository.save(randomMessage);
+  }
+
+  getRandomMinId(): string {
+    return `${[randomInt(9)]}${[randomInt(9)]}${[randomInt(9)]}${[randomInt(9)]}${[randomInt(9)]}${[randomInt(9)]}`
+  }
 }
 
