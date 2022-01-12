@@ -1,9 +1,12 @@
 import { Injectable, Logger } from '@nestjs/common';
 import DiscordMessage from 'apps/common/entities/message.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, SelectQueryBuilder } from 'typeorm';
+import { Repository, SelectQueryBuilder, Unique } from 'typeorm';
 import { Tagger, Lexer } from 'pos';
-
+import * as Intent from 'sentence-intent';
+import { randomUUID } from 'crypto';
+import IntentDto from 'apps/common/dto/Intent.dto';
+import { Message } from 'discord.js';
 
 @Injectable()
 export class MessageHandlerService {
@@ -21,6 +24,20 @@ export class MessageHandlerService {
     message.message = message.message.replace(discordIdReg, "Discordusername")
     message.message = message.message.replace(discordIdReg, "Discordusername")
 
+    if (message.message.split(" ")[0] == "Discordusername") {
+      message.message = message.message.replace("Discordusername", "")
+    }
+
+    if (message.intent == undefined && message.context == undefined) {
+      const sentence = new Intent(message.message)
+
+      const intent = sentence.getIntent();
+      const context = sentence.getContext();
+
+      message.intent = intent != undefined ? intent : randomUUID()
+      message.context = context != undefined ? context : randomUUID()
+    }
+
     return await this.repository.save(message);
   }
 
@@ -31,4 +48,54 @@ export class MessageHandlerService {
   async getAll(): Promise<DiscordMessage[]> {
     return await this.repository.find();
   }
+
+  removeDuplicatedMessages(arr: DiscordMessage[]): DiscordMessage[] {
+    return arr.filter((value, index, self) =>
+      index === self.findIndex((o) => (
+        o.message.toLowerCase() == value.message.toLowerCase()
+      ))
+    )
+  }
+
+  findMessagesThenFill(arr: string[], arr2: DiscordMessage[]) {
+    arr2.forEach(message => {
+      if (arr.find(i => i == message.intent + message.context) == undefined) {
+        arr.push(message.intent + message.context)
+      }
+    });
+  }
+
+  async getAiData(): Promise<any> {
+    const discordMessages = await this.getAll();
+
+    const unique = this.removeDuplicatedMessages(discordMessages);
+
+    const intentsString: string[] = []
+
+    this.findMessagesThenFill(intentsString, unique);
+
+    const intents: IntentDto[] = []
+
+    intentsString.forEach(intent => {
+      const messages: DiscordMessage[] = unique.filter(m => m.intent + m.context == intent)
+
+      const patterns: string[] = [];
+      const responses: string[] = [];
+
+      messages.forEach(message => {
+        patterns.push(message.message);
+        if (message.response != undefined && message.response != '') {
+          responses.push(message.response);
+        }
+      });
+
+      if (patterns.length > 0 && responses.length > 0) {
+        intents.push(new IntentDto(intent, patterns, responses))
+      }
+    });
+
+    return intents;
+  }
+
 }
+

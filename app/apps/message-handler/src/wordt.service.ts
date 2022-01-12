@@ -64,7 +64,7 @@ export class WordService {
 
       message.message = message.message.replace(discordIdReg, "Discordusername")
       message.message = message.message.replace(discordIdReg, "Discordusername")
-      
+
       this.logger.log(`handling message :${message.message}`)
 
       const words = this.lexer.lex(message.message);
@@ -79,7 +79,7 @@ export class WordService {
 
         const word: Word = saveWords.find((word) => word.word.toLowerCase() == w);
 
-        if (word == undefined) {
+        if (word === undefined) {
           const newWord = new Word(w);
           newWord.tag = tag;
           saveWords.push(newWord);

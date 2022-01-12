@@ -19,6 +19,12 @@ export class MessageHandlerController {
     return await this.wordService.bag();
   }
 
+  @Get('/ai/data')
+  async aiData(): Promise<any> {
+    return await this.messageHandlerService.getAiData();
+  }
+
+
   @Get('/dictionary/')
   async dictonairy(@Query('word') word: string): Promise<Dictionary[]> {
     return await this.dictionaryService.dictionary(word);
@@ -35,6 +41,24 @@ export class MessageHandlerController {
   async learn() {
     Logger.log('Creating bag');
     await this.wordService.createBag();
+  }
+
+  @Cron(CronExpression.EVERY_5_MINUTES)
+  async learnChannel5Min() {
+    Logger.log('EVERY_5_MINUTES');
+    //TODO ask response
+  }
+
+  @Cron(CronExpression.EVERY_30_MINUTES)
+  async learnChannel30Min() {
+    Logger.log('EVERY_30_MINUTES');
+    //TODO remove every sentence with small id without response
+  }
+
+  @Cron(CronExpression.EVERY_HOUR)
+  async learnChannel1Hour() {
+    Logger.log('EVERY_HOUR');
+
   }
 
   @Post('/createBag')

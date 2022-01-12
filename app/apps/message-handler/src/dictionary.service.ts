@@ -1,7 +1,4 @@
 import { HttpService, Injectable, Logger } from '@nestjs/common';
-import DiscordMessage from 'apps/common/entities/message.entity';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Not, Repository } from 'typeorm';
 import { Dictionary } from 'apps/common/dto/dictionary.dto';
 
 @Injectable()

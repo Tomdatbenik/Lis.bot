@@ -11,8 +11,13 @@ export class ChannelController {
 
   private logger = new Logger(ChannelController.name);
 
-  @Get('')
+  @Get('/one')
   async findOneMin(@Query('id') id): Promise<Channel> {
+    return await this.channelService.findOne(id);
+  }
+
+  @Get("/ai")
+  async getAiChannels(@Query('id') id): Promise<Channel> {
     return await this.channelService.findOne(id);
   }
 

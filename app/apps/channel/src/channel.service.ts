@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import Channel from 'apps/common/entities/channel.entity';
+import { ChannelAITypes } from 'apps/common/enums/channelAITypes.enum';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -31,5 +32,8 @@ export class ChannelService {
       });
   }
 
+  async findAiChannels(): Promise<Channel[]> {
+    return await this.repository.find({ learn: ChannelAITypes.LEARN });
+  }
 
 }

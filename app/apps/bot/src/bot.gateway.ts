@@ -147,9 +147,9 @@ export class BotGateway {
       context.content,
       context.author.id,
       context.author.username,
-      randomUUID(),
+      'dictionary',
+      content.word,
       response,
-      'dictionary'
     ));
 
     await context.reply(

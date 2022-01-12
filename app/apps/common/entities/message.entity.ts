@@ -8,11 +8,11 @@ import {
 
 @Entity()
 export default class DiscordMessage {
-  constructor(message?: string, authorId?: string, authorName?: string, intend?: string, response?: string, context?: string) {
+  constructor(message?: string, authorId?: string, authorName?: string, intend?: string, context?: string, response?: string) {
     this.uuid = randomUUID();
     this.message = message
     this.authorId = authorId;
-    this.intend = intend;
+    this.intent = intend;
     this.context = context;
     this.response = response;
     this.authorName = authorName
@@ -23,7 +23,10 @@ export default class DiscordMessage {
   uuid?: string;
 
   @Column()
-  intend?: string;
+  minId?: string;
+
+  @Column()
+  intent?: string;
 
   @Column()
   context?: string;
