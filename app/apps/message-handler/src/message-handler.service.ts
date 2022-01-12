@@ -98,21 +98,49 @@ export class MessageHandlerService {
   }
 
   async getMessageWithoutResponse(): Promise<DiscordMessage> {
-    const messages = await this.repository.find({ message: undefined })
+    const message = await this.repository
+      .createQueryBuilder("discord_message")
+      .where(`response = ''`)
+      .andWhere(`minId = ''`)
+      .getOne();
 
-    const randomMessage = messages[randomInt(messages.length)]
+    console.log(message)
 
-    randomMessage.minId = this.getRandomMinId();
+    if (message != undefined) {
+      message.minId = this.getRandomMinId();
+      let dublicate = true;
+      while (dublicate) {
+        message.minId = this.getRandomMinId();
+        if (await await this.repository
+          .createQueryBuilder("discord_message")
+          .andWhere(`minId = :minId`, { minId: message.minId })
+          .getOne() == undefined) {
+          dublicate = false;
+        }
+      }
 
-    while (await this.repository.find({ minId: randomMessage.minId }) != undefined) {
-      randomMessage.minId = this.getRandomMinId();
+      return await this.repository.save(message);
     }
 
-    return await this.repository.save(randomMessage);
+    return undefined;
   }
 
   getRandomMinId(): string {
-    return `${[randomInt(9)]}${[randomInt(9)]}${[randomInt(9)]}${[randomInt(9)]}${[randomInt(9)]}${[randomInt(9)]}`
+    return `${randomInt(9)}${randomInt(9)}${randomInt(9)}${randomInt(9)}${randomInt(9)}`
   }
+
+  async resetMessageMiniIds(): Promise<void> {
+    const messages = await this.repository
+      .createQueryBuilder("discord_message")
+      .where(`response = ''`)
+      .andWhere(`minId != ''`)
+      .getMany();
+
+    messages.forEach(async message => {
+      message.minId = '';
+      await this.repository.save(message)
+    });
+  }
+
 }
 

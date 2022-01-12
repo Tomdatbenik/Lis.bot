@@ -30,8 +30,6 @@ export class TeachService {
         return [];
       });
 
-    console.log(channels)
-
     return channels;
   }
 
@@ -39,22 +37,23 @@ export class TeachService {
     const channels = await this.getAiChannels();
 
     channels.forEach(async channel => {
-      const message = this.messageHandlerService.getMessageWithoutResponse();
-      await this.httpService
-        .request({
-          url: `http://localhost:8079/${process.env.BOT}/ai/${channel.id}`,
-          method: 'post',
-          data: message
-        })
-        .toPromise()
-        .then((result) => {
-          return result.data as Channel[];
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
-        });
-    });
+      const message = await this.messageHandlerService.getMessageWithoutResponse();
 
+      if (message != undefined) {
+        message.message = "How would you respond to the message: \"" + message.message + "? \n" +
+          'respond with: !teach ' + message.minId + ' *your anwser*'
+
+        await this.httpService
+          .request({
+            url: `http://localhost:8079/${process.env.BOT}/send/${channel.id}`,
+            method: 'post',
+            data: message
+          })
+          .toPromise()
+          .catch((err) => {
+            this.logger.log(err);
+          });
+      }
+    });
   }
 }

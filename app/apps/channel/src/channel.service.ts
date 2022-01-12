@@ -38,8 +38,6 @@ export class ChannelService {
       .where(`channel.learn = :learn`, { learn: ChannelAITypes.LEARN.toString() })
       .getMany();
 
-    console.log(channels)
-
     return channels
   }
 

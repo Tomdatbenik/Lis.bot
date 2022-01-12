@@ -28,6 +28,7 @@ export class MessageHandlerController {
 
   @Get('/learn')
   async learnRandomChannel() {
+    console.log('request learn')
     this.teachService.sendResponseRequest();
   }
 
@@ -55,16 +56,9 @@ export class MessageHandlerController {
     this.teachService.sendResponseRequest();
   }
 
-  @Cron(CronExpression.EVERY_30_MINUTES)
-  async learnChannel30Min() {
-    Logger.log('EVERY_30_MINUTES');
-    //TODO remove every sentence with small id without response
-  }
-
-  @Cron(CronExpression.EVERY_HOUR)
+  @Cron("0 */29 * * * *")
   async learnChannel1Hour() {
-    Logger.log('EVERY_HOUR');
-
+    this.messageHandlerService.resetMessageMiniIds();
   }
 
   @Post('/createBag')
