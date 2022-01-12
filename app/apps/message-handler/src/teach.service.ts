@@ -40,7 +40,7 @@ export class TeachService {
       const message = await this.messageHandlerService.getMessageWithoutResponse();
 
       if (message != undefined) {
-        message.message = "How would you respond to the message: \"" + message.message + "? \n" +
+        message.message = "How would you respond to the message: \"" + message.message + "\"? \n" +
           'respond with: !teach ' + message.minId + ' *your anwser*'
 
         await this.httpService

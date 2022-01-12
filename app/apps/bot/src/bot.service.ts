@@ -187,6 +187,21 @@ export class BotService {
     return bag;
   }
 
+  async deleteChannel(id: string): Promise<void> {
+    await this.httpService
+      .request({
+        url: `http://localhost:8079/${process.env.CHANNEL}/`,
+        method: 'delete',
+        params: {
+          id: id,
+        },
+      })
+      .toPromise()
+      .catch((result) => {
+        this.logger.error(result);
+      });
+  }
+
   async chat(msg): Promise<string> {
     const message = await this.httpService
       .request({

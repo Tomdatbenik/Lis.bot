@@ -20,13 +20,11 @@ export class MessageHandlerService {
 
   async saveMessage(message: DiscordMessage): Promise<DiscordMessage> {
     //filter botdiscord tag
-    const discordIdReg = /<@.?[0-9]*?>/g
-    message.message = message.message.replace(discordIdReg, "Discordusername")
-    message.message = message.message.replace(discordIdReg, "Discordusername")
+    const discordIdRegBotTag = /<@.?[0-9]*?> /g
+    const discordIdUserRegBot = /<@.?[0-9]*?>/g
 
-    if (message.message.split(" ")[0] == "Discordusername") {
-      message.message = message.message.replace("Discordusername", "")
-    }
+    message.message = message.message.replace(discordIdRegBotTag, "")
+    message.message = message.message.replace(discordIdUserRegBot, "Discordusername")
 
     if (message.intent == undefined && message.context == undefined) {
       const sentence = new Intent(message.message)

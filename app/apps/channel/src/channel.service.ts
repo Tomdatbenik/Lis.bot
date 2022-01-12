@@ -41,4 +41,8 @@ export class ChannelService {
     return channels
   }
 
+  async deleteOne(id: any): Promise<void> {
+    await this.repository.delete(id);
+  }
+
 }

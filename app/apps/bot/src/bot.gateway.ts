@@ -39,7 +39,13 @@ export class BotGateway {
   async sendMessage(message: DiscordMessage, channelId: string): Promise<void> {
     const client = this.discordProvider.getClient();
     const channel = await client.channels.fetch(channelId);
-    (channel as TextChannel).send(message.message);
+
+    if (!channel.deleted) {
+      (channel as TextChannel).send(message.message);
+    }
+    else {
+      this.botservice.deleteChannel(channel.id);
+    }
   }
 
   //#region simple stuff

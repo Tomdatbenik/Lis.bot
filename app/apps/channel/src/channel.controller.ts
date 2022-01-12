@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Logger, Param, Post, Put, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Logger, Param, Post, Put, Query } from '@nestjs/common';
 import Channel from 'apps/common/entities/channel.entity';
 import { ChannelAITypes } from 'apps/common/enums/channelAITypes.enum';
 import { ChannelTypes } from 'apps/common/enums/channelTypes.enum';
@@ -19,6 +19,11 @@ export class ChannelController {
   @Get("/ai")
   async getAiChannels(): Promise<Channel[]> {
     return await this.channelService.findAiChannels();
+  }
+
+  @Delete('/one')
+  async deleteOneMin(@Query('id') id): Promise<void> {
+    return await this.channelService.deleteOne(id);
   }
 
   @Post()
