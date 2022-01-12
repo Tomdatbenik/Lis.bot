@@ -49,7 +49,8 @@ export class MessageHandlerController {
   @Cron(CronExpression.EVERY_5_MINUTES)
   async learn() {
     Logger.log('Creating bag');
-    await this.wordService.createBag();
+    await this.messageHandlerService.markAiMessages();
+    await this.teachService.learn();
   }
 
   @Cron(CronExpression.EVERY_5_MINUTES)

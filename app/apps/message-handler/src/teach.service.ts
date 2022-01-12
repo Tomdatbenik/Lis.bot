@@ -33,6 +33,19 @@ export class TeachService {
     return channels;
   }
 
+  async learn(): Promise<void> {
+    await this.httpService
+      .request({
+        url: `http://localhost:8079/${process.env.AI}/learn`,
+        method: 'get',
+      })
+      .toPromise()
+      .catch((err) => {
+        console.log(err);
+        return [];
+      });
+  }
+
   async sendResponseRequest(): Promise<void> {
     const channels = await this.getAiChannels();
 

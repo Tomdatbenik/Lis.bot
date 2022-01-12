@@ -43,6 +43,9 @@ export default class DiscordMessage {
   @Column()
   authorName?: string;
 
+  @Column()
+  aiMarked?: boolean = false;
+
   @CreateDateColumn()
   received?: Date;
 }

@@ -5,7 +5,7 @@ nltk.download('wordnet')
 lemmatizer = WordNetLemmatizer()
 
 def prepareWords(words, intents, ignore_words,classes, documents):
-    for intent in intents['intents']:
+    for intent in intents:
         for pattern in intent['patterns']:
 
             # take each word and tokenize it

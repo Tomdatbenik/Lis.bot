@@ -12,7 +12,7 @@ import nltk
 nltk.download('punkt')
 nltk.download('wordnet')
 lemmatizer = WordNetLemmatizer()
-
+import requests
 
 def clean_up_sentence(sentence):
     sentence_words = nltk.word_tokenize(sentence)
@@ -56,10 +56,10 @@ def predict_class(sentence, model, words, classes):
     return return_list
 
 
-def getResponse(ints, intents_json):
+def getResponse(ints, intents):
     print(ints)
     tag = ints[0]['intent']
-    list_of_intents = intents_json['intents']
+    list_of_intents = intents
     for i in list_of_intents:
         if(i['tag'] == tag):
             result = random.choice(i['responses'])
@@ -72,7 +72,12 @@ def predict(msg, data, model=None):
     classes = []
     documents = []
     ignore_words = ['?', '!']
-    intents = json.loads(data)
+
+    URL = "http://localhost:8079/message/ai/data"
+    # sending get request and saving the response as response object
+    r = requests.get(url = URL)
+
+    intents = r.json()
 
     prepareWords(words, intents, ignore_words, classes, documents)
 

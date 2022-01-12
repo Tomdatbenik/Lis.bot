@@ -11,14 +11,20 @@ import nltk
 nltk.download('punkt')
 nltk.download('wordnet')
 lemmatizer = WordNetLemmatizer()
+import requests
 
-
-def createModel(data):
+def createModel():
     words = []
     classes = []
     documents = []
     ignore_words = ['?', '!']
-    intents = json.loads(data)
+
+    URL = "http://localhost:8079/message/ai/data"
+    # sending get request and saving the response as response object
+    r = requests.get(url = URL)
+
+    intents = r.json()
+    print(intents)
 
     prepareWords(words, intents, ignore_words, classes, documents)
 

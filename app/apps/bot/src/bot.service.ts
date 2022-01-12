@@ -330,7 +330,7 @@ export class BotService {
       })
       .toPromise()
       .then((result) => {
-        return result.data;
+        return result.data as string;
       })
       .catch((err) => {
         console.log(err);

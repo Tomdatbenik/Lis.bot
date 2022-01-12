@@ -55,7 +55,7 @@ export class WordService {
   async createBag(): Promise<Word[]> {
     await this.repository.clear();
 
-    const messages = await this.messageService.getAll();
+    const messages = await this.messageService.getAllAiMarked();
 
     const saveWords: Word[] = [];
 

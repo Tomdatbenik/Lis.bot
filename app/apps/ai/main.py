@@ -1,3 +1,4 @@
+from nltk.util import pr
 from numpy import chararray
 from createModel import createModel
 from predict import predict
@@ -14,12 +15,21 @@ def create() -> json:
     createModel(request.data)
     return {}
 
+@app.route("/learn", methods=["get"])
+def learn() -> json:
+    print("Started learning!" )
+    createModel()
+    return {}
+
 
 @app.route("/chat", methods=["POST"])
 def chat() -> chararray:
     msg = request.args.get('msg')
 
-    return predict(msg,request.data)
+    prediction = predict(msg,request.data)
+
+    print(prediction)
+    return prediction
 
 
 if __name__ == "__main__":

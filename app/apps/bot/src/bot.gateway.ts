@@ -17,7 +17,7 @@ import {
 } from 'discord-nestjs';
 import { Message, TextChannel } from 'discord.js';
 import { BotService } from './bot.service';
-import { DictionaryInputDto as DictionaryInputDto } from './dto/dictionaryInput.dto';
+import { DictionaryInputDto } from './dto/dictionaryInput.dto';
 import { TeachInputDto } from './dto/teachInput.dto';
 import { UserDto } from './dto/user.dto';
 import { WeatherInputDto } from './dto/weatherInput.dto';
@@ -239,7 +239,10 @@ export class BotGateway {
         await context.reply("Me be baka, I can't handle this! (─‿‿─)");
       }
       this.botservice.saveMessage(context);
-      const response = await this.botservice.chat(context.content);
+      let response = await this.botservice.chat(context.content);
+      console.log(response)
+ 
+      response = response != '{}' ? response : "Me be baka, (─‿‿─)";
 
       await context.reply(response ? response : "Me be baka, (─‿‿─)");
     }

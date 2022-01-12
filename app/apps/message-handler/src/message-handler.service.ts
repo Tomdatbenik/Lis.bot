@@ -54,8 +54,23 @@ export class MessageHandlerService {
     return 'Hello World!';
   }
 
-  async getAll(): Promise<DiscordMessage[]> {
-    return await this.repository.find();
+  async markAiMessages(): Promise<void> {
+    const messages = await this.repository
+      .createQueryBuilder("discord_message")
+      .where(`response != ''`)
+      .getMany();
+
+    messages.forEach(async message => {
+      message.aiMarked = true;
+      await this.repository.save(message)
+    });
+  }
+
+  async getAllAiMarked(): Promise<DiscordMessage[]> {
+    return await this.repository
+      .createQueryBuilder("discord_message")
+      .where(`aiMarked = :aiMarked`, { aiMarked: true })
+      .getMany();
   }
 
   private removeDuplicatedMessages(arr: DiscordMessage[]): DiscordMessage[] {
@@ -75,7 +90,7 @@ export class MessageHandlerService {
   }
 
   async getAiData(): Promise<any> {
-    const discordMessages = await this.getAll();
+    const discordMessages = await this.getAllAiMarked();
 
     const unique = this.removeDuplicatedMessages(discordMessages);
 
@@ -91,7 +106,7 @@ export class MessageHandlerService {
       const patterns: string[] = [];
       const responses: string[] = [];
 
-      messages.forEach(message => {
+      messages.forEach(async message => {
         patterns.push(message.message);
         if (message.response != undefined && message.response != '') {
           responses.push(message.response);
